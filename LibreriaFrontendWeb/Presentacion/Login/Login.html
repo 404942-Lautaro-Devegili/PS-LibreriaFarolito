@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Librería Farolito</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .login-container {
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 20px;
+        }
+
+        .card {
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border: none;
+        }
+
+        .card-header {
+            background-color: #0d6efd;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .form-control:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 10px;
+        }
+
+        #togglePassword {
+            border-left: none;
+        }
+
+            #togglePassword:focus {
+                box-shadow: 0 0 0 0.2rem rgba(13,110,253,.25);
+            }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container">
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="bi bi-book-half me-2"></i>Librería Farolito</h3>
+                    <p class="mb-0">Inicio de Sesión</p>
+                </div>
+                <div class="card-body p-4">
+                    <form id="loginForm">
+                        <div class="form-group mb-3">
+                            <label for="txtUsuario" class="form-label">Usuario:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person-fill"></i></span>
+                                <input type="text" class="form-control" id="txtUsuario" placeholder="Ingrese su usuario" required>
+                            </div>
+                        </div>
+                        <div class="form-group mb-4">
+                            <label for="txtPassword" class="form-label">Contraseña:</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" class="form-control" id="txtPassword" placeholder="Ingrese su contraseña" required>
+                                <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="submit" id="btnLogin" class="btn btn-primary btn-login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(function () {
+            checkSession();
+
+            $("#loginForm").submit(async function (e) {
+                e.preventDefault();
+                await login();
+            });
+
+            $("#txtUsuario, #txtPassword").keypress(function (e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    $("#loginForm").submit();
+                }
+            });
+
+            async function checkSession() {
+                try {
+                    const response = await $.ajax({
+                        url: "/api/Usuario/CheckSession",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    if (response.hasValidSession) {
+                        window.location.href = "/Inicio/Inicio.html";
+                    }
+                } catch (error) {
+                    console.log("No active session");
+                }
+            }
+
+            async function login() {
+                const usuario = $("#txtUsuario").val();
+                const password = $("#txtPassword").val();
+
+                if (!usuario || !password) {
+                    await Swal.fire({
+                        icon: 'warning',
+                        title: 'Campos incompletos',
+                        text: 'Por favor complete todos los campos',
+                        confirmButtonColor: '#0d6efd'
+                    });
+                    return;
+                }
+
+                const btnLogin = $("#btnLogin");
+                btnLogin.prop("disabled", true);
+                btnLogin.html('<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Iniciando sesión...');
+
+                try {
+                    const response = await $.ajax({
+                        url: "/api/Usuario/Login",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({ usuario: usuario, password: password }),
+                        dataType: "json",
+                        xhrFields: {
+                            withCredentials: true
+                        }
+                    });
+
+                    console.log("Haciendo checkSession inmediatamente después del login...");
+                    const sessionCheck = await $.ajax({
+                        url: "/api/Usuario/CheckSession",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    await Swal.fire({
+                        icon: 'success',
+                        title: '¡Bienvenido!',
+                        text: `Hola ${response.nombre} ${response.apellido}`,
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+
+                    window.location.href = "/Inicio/Inicio.html";
+
+                } catch (error) {
+                    console.log("Error: ", error);
+                    let errorMessage = 'Error al iniciar sesión';
+                    let errorTitle = 'Error';
+
+                    if (error.responseJSON && error.responseJSON.message) {
+                        errorMessage = error.responseJSON.message;
+
+                        if (errorMessage.includes('incorrectos')) {
+                            errorTitle = 'Credenciales Incorrectas';
+                            errorMessage = 'Usuario o contraseña incorrectos. Verifique sus datos e intente nuevamente.';
+                        } else if (errorMessage.includes('no está activo')) {
+                            errorTitle = 'Usuario Inactivo';
+                            errorMessage = 'Su usuario se encuentra desactivado. Contacte al administrador.';
+                        } else if (errorMessage.includes('no existe')) {
+                            errorTitle = 'Usuario No Encontrado';
+                            errorMessage = 'El usuario ingresado no existe en el sistema.';
+                        }
+                    } else if (error.status === 0) {
+                        errorTitle = 'Error de Conexión';
+                        errorMessage = 'No se pudo conectar con el servidor. Verifique su conexión a internet.';
+                    } else if (error.status === 500) {
+                        errorTitle = 'Error del Servidor';
+                        errorMessage = 'Error interno del servidor. Intente nuevamente en unos minutos.';
+                    }
+
+                    await Swal.fire({
+                        icon: 'error',
+                        title: errorTitle,
+                        text: errorMessage,
+                        confirmButtonColor: '#0d6efd',
+                        confirmButtonText: 'Entendido'
+                    });
+
+                    if (errorTitle === 'Credenciales Incorrectas' || errorTitle === 'Usuario No Encontrado') {
+                        $("#txtPassword").val('').focus();
+                    }
+                } finally {
+                    btnLogin.prop("disabled", false);
+                    btnLogin.html('<i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión');
+                }
+            }
+
+            $("#togglePassword").click(function () {
+                const passwordField = $("#txtPassword");
+                const icon = $(this).find("i");
+
+                if (passwordField.attr("type") === "password") {
+                    passwordField.attr("type", "text");
+                    icon.removeClass("bi-eye").addClass("bi-eye-slash");
+                } else {
+                    passwordField.attr("type", "password");
+                    icon.removeClass("bi-eye-slash").addClass("bi-eye");
+                }
+            });
+
+
+        });
+    </script>
+</body>
+</html>

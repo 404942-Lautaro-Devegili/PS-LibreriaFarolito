@@ -1,0 +1,212 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Librería Farolito</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .dashboard-card {
+            transition: transform 0.2s;
+        }
+
+            .dashboard-card:hover {
+                transform: translateY(-5px);
+            }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .exchange-widget {
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <div class="row mb-4">
+            <div class="col-md-12">
+                <h1>Bienvenido a Librería Farolito</h1>
+                <p class="lead" id="welcomeMessage">Sistema de Gestión de Librería</p>
+            </div>
+        </div>
+
+        <!-- Widgets Row -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <div class="weather-widget" id="weatherWidget">
+                    <h4><i class="bi bi-cloud-sun me-2"></i>Clima en Córdoba</h4>
+                    <div id="weatherInfo">Cargando información del clima...</div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="exchange-widget" id="exchangeWidget">
+                    <h4><i class="bi bi-currency-dollar me-2"></i>Cotización del Dólar</h4>
+                    <div id="exchangeInfo">Cargando cotización...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Cards -->
+        <div class="row">
+            <div class="col-md-3">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-journal-bookmark display-4 text-primary"></i>
+                        <h5 class="card-title mt-3">Libros</h5>
+                        <p class="card-text">Gestión de catálogo</p>
+                        <a href="/Libros/Actualizacion/ActualizacionLibros.html" class="btn btn-primary">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bookmark-check display-4 text-success"></i>
+                        <h5 class="card-title mt-3">Reservas</h5>
+                        <p class="card-text">Gestión de reservas</p>
+                        <a href="/Reservas/Reserva/Reservas.html" class="btn btn-success">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-box-seam display-4 text-warning"></i>
+                        <h5 class="card-title mt-3">Entregas</h5>
+                        <p class="card-text">Gestión de entregas</p>
+                        <a href="/Entregas/Asignar/Asignar.html" class="btn btn-warning">Ir</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card dashboard-card">
+                    <div class="card-body text-center">
+                        <i class="bi bi-bar-chart-line display-4 text-info"></i>
+                        <h5 class="card-title mt-3">Estadísticas</h5>
+                        <p class="card-text">Reportes y análisis</p>
+                        <a href="/Estadistica/Estadisticas.html" class="btn btn-info">Ir</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+
+            // Load weather data
+            await loadWeatherArgentina();
+
+            // Load dollar exchange rate
+            await loadDolarBlue();
+        });
+
+        async function loadWeatherArgentina() {
+            try {
+                // Using OpenWeatherMap API (you'll need to get an API key)
+                const apiKey = '52a6a074973d70f8f0beb7840eae9479'; // Replace with actual API key
+                const city = 'Cordoba,AR';
+                const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric&lang=es`;
+
+                const response = await $.ajax({
+                    url: url,
+                    type: "GET",
+                    dataType: "json"
+                });
+
+                const weatherInfo = `
+                                <div class="d-flex align-items-center">
+                                    <img src="http://openweathermap.org/img/wn/${response.weather[0].icon}@2x.png" alt="weather" width="50">
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">${Math.round(response.main.temp)}°C</h3>
+                                        <p class="mb-0">${response.weather[0].description}</p>
+                                        <small>Humedad: ${response.main.humidity}% | Viento: ${response.wind.speed} m/s</small>
+                                    </div>
+                                </div>
+                            `;
+
+                $("#weatherInfo").html(weatherInfo);
+            } catch (error) {
+                // Fallback to mock data if API fails
+                $("#weatherInfo").html(`
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-cloud-sun display-4"></i>
+                                    <div class="ms-3">
+                                        <h3 class="mb-0">25°C</h3>
+                                        <p class="mb-0">Parcialmente nublado</p>
+                                        <small>Humedad: 65% | Viento: 10 km/h</small>
+                                    </div>
+                                </div>
+                            `);
+            }
+        }
+
+        async function loadDolarBlue() {
+            try {
+                const response = await $.ajax({
+                    url: "https://dolarapi.com/v1/dolares",
+                    type: "GET",
+                    dataType: "json",
+                    timeout: 5000
+                });
+
+                const dolarBlue = response.find(d => d.casa === "blue");
+                const dolarOficial = response.find(d => d.casa === "oficial");
+
+                if (dolarBlue && dolarOficial) {
+                    $("#exchangeWidget").html(`
+                                            <h4><i class="bi bi-currency-dollar me-2"></i>Cotización del Dólar</h4>
+                                            <div class="mt-3">
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <h5>Dólar Oficial</h5>
+                                                        <p class="mb-0">Compra: $${dolarOficial.compra}</p>
+                                                        <p class="mb-0">Venta: $${dolarOficial.venta}</p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <h5>Dólar Blue</h5>
+                                                        <p class="mb-0">Compra: $${dolarBlue.compra}</p>
+                                                        <p class="mb-0">Venta: $${dolarBlue.venta}</p>
+                                                    </div>
+                                                </div>
+                                                <small class="text-light d-block mt-3">Actualizado: ${new Date().toLocaleTimeString('es-AR')}</small>
+                                            </div>
+                                        `);
+                }
+            } catch (error) {
+                console.log("Error al cargar cotización:", error);
+                $("#exchangeWidget").html(`
+                                        <h4><i class="bi bi-currency-dollar me-2"></i>Cotización del Dólar</h4>
+                                        <div class="mt-3">
+                                            <p>No se pudo cargar la cotización actual.</p>
+                                        </div>
+                                    `);
+            }
+        }
+    </script>
+</body>
+</html>

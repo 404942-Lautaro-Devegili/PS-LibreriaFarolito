@@ -1,0 +1,1137 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Libros</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Sistema de Gestión de Libros</h1>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="radio-group">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="bookAction" id="rbtAlta" checked>
+                        <label class="form-check-label" for="rbtAlta">Alta</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="bookAction" id="rbtMod">
+                        <label class="form-check-label" for="rbtMod">Modificar</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <form id="bookForm">
+                    <div class="form-group">
+                        <label for="txtCodigo">Código:</label>
+                        <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtIsbn">ISBN:</label>
+                        <input type="text" class="form-control" id="txtIsbn" placeholder="Ingrese ISBN">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtEan13">EAN13:</label>
+                        <input type="text" class="form-control" id="txtEan13" placeholder="Ingrese EAN13">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTitulo">Título:</label>
+                        <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboAutor">Autor:</label>
+                        <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                        <datalist id="autorList"></datalist>
+                        <input type="hidden" id="txtAutor">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboSerie">Serie:</label>
+                        <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                        <datalist id="serieList"></datalist>
+                        <input type="hidden" id="txtSerie">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboEditorial">Editorial:</label>
+                        <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                        <datalist id="editorialList"></datalist>
+                        <input type="hidden" id="txtEditorial">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cboMateria">Materia:</label>
+                        <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                        <datalist id="materiaList"></datalist>
+                        <input type="hidden" id="txtMateria">
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtPrecioLista">Precio Lista:</label>
+                    <input type="text" class="form-control" id="txtPrecioLista" placeholder="Ingrese precio lista">
+                </div>
+                <div class="form-group">
+                    <label for="txtPrecio">Precio:</label>
+                    <input type="text" class="form-control" id="txtPrecio" placeholder="Precio" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="txtContado">Contado:</label>
+                    <input type="text" class="form-control" id="txtContado" placeholder="Contado" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="txtExistencia">Existencia:</label>
+                    <input type="text" class="form-control" id="txtExistencia" placeholder="Ingrese existencia">
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="chkNovedad">
+                    <label class="form-check-label" for="chkNovedad">Novedad</label>
+                </div>
+
+                <div class="form-check mb-3">
+                    <input type="checkbox" class="form-check-input" id="chkDisponible">
+                    <label class="form-check-label" for="chkDisponible">Disponible</label>
+                </div>
+
+                <button type="button" id="btnCrear" class="btn btn-primary">Crear</button>
+                <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+                <button type="button" id="btnPrueba" class="btn btn-success">Importar Excel</button>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <div id="lblUltimoCodigo" class="alert alert-info">Próximo Código a Cargar: </div>
+            </div>
+        </div>
+
+        <div class="progress-container" style="display: none;">
+            <div class="progress">
+                <div id="prbLibros" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            <div id="lblLibrosProcesados" class="mt-2">Libros procesados: 0</div>
+            <div id="lblLibrosRestantes" class="mt-1">Libros restantes: 0</div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="importExcelModalLabel">Importar Archivo Excel</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="excelUploadForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="excelFile" class="form-label">Seleccionar Archivo Excel</label>
+                            <input class="form-control" type="file" id="excelFile" accept=".xls,.xlsx">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" id="btnUploadExcel" class="btn btn-primary">Cargar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+            let combosCambiados = 0;
+            let mensajeLibro = "Próximo Código a Cargar: ";
+            let mensajeError = "";
+            let connection = null;
+
+            function initializeSignalR() {
+                connection = new signalR.HubConnectionBuilder()
+                    .withUrl("/progressHub")
+                    .configureLogging(signalR.LogLevel.Information)
+                    .build();
+
+                connection.on("ReceiveProgress", function (progress, processed, remaining) {
+                    actualizarProgresoLibrosProcesadosYRestantes(progress, processed, remaining);
+                });
+
+                connection.start().catch(function (err) {
+                    console.error("Error al conectar con SignalR:", err.toString());
+                });
+            }
+
+            initializeSignalR();
+            await cargarCombos(1);
+            setearCombos();
+            await setNextCodigo();
+
+            $("#txtEan13").val("-");
+
+            $("#rbtAlta").change(async function () {
+                if ($(this).is(":checked")) {
+                    await cambioRBTs();
+                    $("#btnCrear").text("Crear");
+                    $("#lblUltimoCodigo").show();
+                    await setNextCodigo();
+                    $("#txtEan13").val("-");
+                }
+            });
+
+            $("#rbtMod").change(async function () {
+                if ($(this).is(":checked")) {
+                    await cambioRBTs();
+                    $("#btnCrear").text("Modificar");
+                    $("#lblUltimoCodigo").hide();
+                }
+            });
+
+            $("#btnCrear").click(async function () {
+                resetToastTracking("codeExists");
+                if (!validarCreacionYOModificacion()) {
+                    toastTopDerecha(mensajeError, "Atención");
+                } else {
+                    if (validarNumeros()) {
+                        const libro = crearLibro();
+                        if ($("#rbtAlta").is(":checked")) {
+                            await guardarLibro(libro, 1);
+                        } else if ($("#rbtMod").is(":checked")) {
+                            await guardarLibro(libro, 2);
+                        }
+                    } else {
+                        toastTopDerecha(mensajeError, "Atención");
+                    }
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, function (validation, element) {
+                if (!$("#rbtAlta").is(":checked")) {
+                    const codigo = element.val();
+                    if (validation.isValid && codigo) {
+                        buscarLibroPorCodigo(codigo);
+                    }
+                }
+            });
+
+            setupNumericFieldValidation("#txtExistencia", validarExistencia);
+            setupPriceFieldValidation("#txtPrecioLista", "#txtPrecio", "#txtContado");
+
+            $("#txtCodigo").on("change", async function () {
+                var codigo = $(this).val();
+                if ($("#rbtAlta").is(":checked")) {
+                    const validation = validarCodigo(codigo);
+                    if (validation.isValid) {
+                        await buscarLibroPorCodigo(codigo);
+                    }
+                }
+            });
+
+
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS//////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            $("#btnLimpiar").click(async function () {
+                limpiar();
+            });
+
+            $("#btnPrueba").click(function () {
+                const importModal = new bootstrap.Modal(document.getElementById('importExcelModal'));
+                importModal.show();
+            });
+
+            $("#btnUploadExcel").click(async function () {
+                const fileInput = $("#excelFile")[0];
+                if (fileInput.files.length === 0) {
+                    toastError("Por favor seleccione un archivo Excel.", "Ningún archivo seleccionado");
+                    return;
+                }
+
+                const formData = new FormData();
+                formData.append("file", fileInput.files[0]);
+
+                const importModal = bootstrap.Modal.getInstance(document.getElementById('importExcelModal'));
+                importModal.hide();
+
+                visibilidadProgreso(true);
+
+                try {
+                    const result = await $.ajax({
+                        url: "/api/Libro/ImportExcel",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false
+                    });
+
+                    visibilidadProgreso(false);
+                    await processImportResult(result);
+                } catch (error) {
+                    visibilidadProgreso(false);
+                    toastError("Error al importar archivo Excel: " + error.message, "Error");
+                }
+            });
+
+            async function setNextCodigo() {
+                $("#lblUltimoCodigo").text(mensajeLibro + await traerNextCodigo());
+            }
+
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText.length >= 3 || searchText === "") {
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText.length >= 3 || searchText === "") {
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText.length >= 3 || searchText === "") {
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText.length >= 3 || searchText === "") {
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    combosCambiados = 1;
+                }
+            });
+
+            $("input, select").keydown(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $("input, select").filter(":visible:not([readonly])");
+                    const idx = inputs.index(this);
+                    if (idx === inputs.length - 1) {
+                        inputs[0].focus();
+                    } else {
+                        inputs[idx + 1].focus();
+                    }
+                }
+            });
+
+            async function cargarCombos(opcion) {
+                // Opción 1: Usar listas globales, Opción 2: Traer de la base
+                if (opcion === 1) {
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                } else {
+                    try {
+                        const autores = await $.ajax({
+                            url: "/api/Libro/TraerAutores",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const editoriales = await $.ajax({
+                            url: "/api/Libro/TraerEditoriales",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const materias = await $.ajax({
+                            url: "/api/Libro/TraerMaterias",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const series = await $.ajax({
+                            url: "/api/Libro/TraerSeries",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        autoresGlobal = autores;
+                        editorialesGlobal = editoriales;
+                        materiasGlobal = materias;
+                        seriesGlobal = series;
+
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    } catch (error) {
+                        console.error("Error cargando datos:", error);
+                        $("#autorList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#editorialList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#materiaList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#serieList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            function setearCombos() {
+                $("#cboAutor").val("");
+                $("#cboEditorial").val("");
+                $("#cboMateria").val("");
+                $("#cboSerie").val("");
+            }
+            async function cambioRBTs() {
+                limpiar();
+                setearCombos();
+                $("#txtCodigo").focus();
+            }
+
+            async function limpiar() {
+                $("#txtCodigo").val("");
+                $("#txtIsbn").val("");
+                $("#txtEan13").val("");
+                $("#txtTitulo").val("");
+                await cargarCombos(1);
+                $("#cboAutor").val("");
+                $("#txtAutor").val("");
+                $("#cboSerie").val("");
+                $("#txtSerie").val("");
+                $("#cboEditorial").val("");
+                $("#txtEditorial").val("");
+                $("#cboMateria").val("");
+                $("#txtMateria").val("");
+                $("#txtPrecioLista").val("");
+                $("#txtPrecio").val("");
+                $("#txtContado").val("");
+                $("#txtExistencia").val("");
+                $("#chkNovedad").prop("checked", false);
+                $("#chkDisponible").prop("checked", false);
+                $("#lblUltimoCodigo").text(mensajeLibro + await traerNextCodigo());
+            }
+
+            async function buscarLibroPorCodigo(codigo) {
+                try {
+                    const response = await $.ajax({
+                        url: `/api/Libro/TraerLibroXCodigo/${codigo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    if (response) {
+                        if (!$("#rbtAlta").is(":checked")) {
+                            if (combosCambiados > 0) {
+                                await cargarCombos(2);
+                            }
+
+                            $("#txtCodigo").val(response.codigo);
+                            $("#txtIsbn").val(response.isbn);
+                            $("#txtEan13").val(response.ean13);
+                            $("#txtTitulo").val(response.titulo);
+
+                            if (!response.idAutor) {
+                                $("#cboAutor").val("");
+                            } else {
+                                seleccionarOAgregarValor("#cboAutor", "#autorList", response.idAutor, response.autor);
+                            }
+
+                            if (!response.idSerie) {
+                                $("#cboSerie").val("");
+                            } else {
+                                seleccionarOAgregarValor("#cboSerie", "#serieList", response.idSerie, response.serie);
+                            }
+
+                            if (!response.idEditorial) {
+                                $("#cboEditorial").val("");
+                            } else {
+                                seleccionarOAgregarValor("#cboEditorial", "#editorialList", response.idEditorial, response.editorial);
+                            }
+
+                            if (!response.idMateria) {
+                                $("#cboMateria").val("");
+                            } else {
+                                seleccionarOAgregarValor("#cboMateria", "#materiaList", response.idMateria, response.materia);
+                            }
+                            $("#txtPrecioLista").val(response.precioLista.toFixed(2).replace('.', ','));
+                            $("#txtPrecio").val(response.precio.toFixed(2).replace('.', ','));
+                            $("#txtContado").val(response.contado.toFixed(2).replace('.', ','));
+                            $("#txtExistencia").val(response.existencia);
+                            $("#chkNovedad").prop("checked", response.novedad);
+                            $("#chkDisponible").prop("checked", response.disponible);
+                        } else if ($("#rbtAlta").is(":checked")) {
+                            toastTopDerecha(
+                                "Ya existe un libro con ese código. No puede crear un nuevo libro con el mismo código.",
+                                "Atención",
+                                { trackId: "codeExists" }
+                            );
+                            $("#txtCodigo").val("");
+                            $("#txtCodigo").focus();
+                        }
+                    } else if (!$("#rbtAlta").is(":checked")) {
+                        toastTopDerecha("No se encontró un libro con el código ingresado, intente nuevamente.", "Atención");
+                        $("#txtCodigo").val("");
+                        $("#txtCodigo").focus();
+                    }
+                } catch (error) {
+                    if (!$("#rbtAlta").is(":checked")) {
+                        if (error.status == 404) {
+                            toastTopDerecha("No existe un libro con ese código. Por favor, introduzca un código existente.", "Atención");
+                        } else {
+                            toastError("Error al buscar el libro. Por favor intente nuevamente.", "Error");
+                        }
+                        $("#txtCodigo").val("");
+                        $("#txtCodigo").focus();
+                    }
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${searchText}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+
+            }
+
+            function seleccionarOAgregarValor(comboSelector, listSelector, id, nombre) {
+                let encontrado = false;
+
+                $(`${listSelector} option`).each(function () {
+                    if ($(this).data("id") == id) {
+                        encontrado = true;
+                        return false;
+                    }
+                });
+
+                if (!encontrado) {
+                    $(listSelector).append(`<option value="${nombre}" data-id="${id}">${nombre}</option>`);
+                }
+
+                $(comboSelector).val(nombre);
+            }
+
+            async function traerNextCodigo() {
+                try {
+                    const nextCode = await $.ajax({
+                        url: "/api/Libro/traerNextCodigo",
+                        type: "GET",
+                        dataType: "json"
+                    });
+                    return nextCode;
+                } catch (error) {
+                    console.error("Error obteniendo próximo código:", error);
+                    return "Error";
+                }
+            }
+
+            function validarCreacionYOModificacion() {
+                let validarCreacion = true;
+                mensajeError = "";
+
+                if (!$("#txtCodigo").val().trim()) {
+                    mensajeError += "El campo Código es obligatorio.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#txtIsbn").val().trim()) {
+                    mensajeError += "El campo ISBN es obligatorio.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#txtEan13").val().trim()) {
+                    $("#txtEan13").val("-");
+                }
+
+                if (!$("#txtTitulo").val().trim()) {
+                    mensajeError += "El campo Título es obligatorio.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#cboAutor").val() && !$("#txtAutor").val()) {
+                    mensajeError += "Debe seleccionar un autor existente o ingresar uno nuevo.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#cboSerie").val() && !$("#txtSerie").val()) {
+                    mensajeError += "Debe seleccionar una serie existente o ingresar una nueva.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#cboEditorial").val() && !$("#txtEditorial").val()) {
+                    mensajeError += "Debe seleccionar una editorial existente o ingresar una nueva.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#cboMateria").val() && !$("#txtMateria").val()) {
+                    mensajeError += "Debe seleccionar una materia existente o ingresar una nueva.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#txtPrecioLista").val().trim()) {
+                    mensajeError += "El campo Precio de Lista es obligatorio.\n";
+                    validarCreacion = false;
+                }
+
+                if (!$("#txtExistencia").val().trim()) {
+                    mensajeError += "El campo Existencia es obligatorio.\n";
+                    validarCreacion = false;
+                }
+
+                return validarCreacion;
+            }
+
+            function validarNumeros() {
+                let validarCreacion = true;
+                mensajeError = "";
+
+                const codigo = $("#txtCodigo").val();
+                if (isNaN(parseInt(codigo))) {
+                    mensajeError = "El código debe ser un número entero.";
+                    validarCreacion = false;
+                }
+
+                const precioLista = $("#txtPrecioLista").val().replace(',', '.');
+                if (isNaN(parseFloat(precioLista))) {
+                    mensajeError = "El precio de lista debe ser un número válido.";
+                    validarCreacion = false;
+                }
+
+                const precio = $("#txtPrecio").val().replace(',', '.');
+                if (isNaN(parseFloat(precio))) {
+                    mensajeError = "El precio debe ser un número válido.";
+                    validarCreacion = false;
+                }
+
+                const contado = $("#txtContado").val().replace(',', '.');
+                if (isNaN(parseFloat(contado))) {
+                    mensajeError = "El contado debe ser un número válido.";
+                    validarCreacion = false;
+                }
+
+                const existencia = $("#txtExistencia").val();
+                if (isNaN(parseInt(existencia))) {
+                    mensajeError = "La existencia debe ser un número entero.";
+                    validarCreacion = false;
+                }
+
+                return validarCreacion;
+            }
+
+            function crearLibro() {
+                const autorText = $("#cboAutor").val();
+                const selectedAutor = $("#autorList option").filter(function () {
+                    return $(this).val() === autorText;
+                }).first();
+
+                const serieText = $("#cboSerie").val();
+                const selectedSerie = $("#serieList option").filter(function () {
+                    return $(this).val() === serieText;
+                }).first();
+
+                const editorialText = $("#cboEditorial").val();
+                const selectedEditorial = $("#editorialList option").filter(function () {
+                    return $(this).val() === editorialText;
+                }).first();
+
+                const materiaText = $("#cboMateria").val();
+                const selectedMateria = $("#materiaList option").filter(function () {
+                    return $(this).val() === materiaText;
+                }).first();
+
+                const libro = {
+                    codigo: parseInt($("#txtCodigo").val()),
+                    isbn: $("#txtIsbn").val(),
+                    ean13: $("#txtEan13").val(),
+                    titulo: $("#txtTitulo").val(),
+                    idAutor: selectedAutor.length > 0 && selectedAutor.data("id") ? parseInt(selectedAutor.data("id")) : 0,
+                    autor: selectedAutor.length > 0 && selectedAutor.data("id") ? "-" : autorText,
+                    idSerie: selectedSerie.length > 0 && selectedSerie.data("id") ? parseInt(selectedSerie.data("id")) : 0,
+                    serie: selectedSerie.length > 0 && selectedSerie.data("id") ? "-" : serieText,
+                    idEditorial: selectedEditorial.length > 0 && selectedEditorial.data("id") ? parseInt(selectedEditorial.data("id")) : 0,
+                    editorial: selectedEditorial.length > 0 && selectedEditorial.data("id") ? "-" : editorialText,
+                    idMateria: selectedMateria.length > 0 && selectedMateria.data("id") ? parseInt(selectedMateria.data("id")) : 0,
+                    materia: selectedMateria.length > 0 && selectedMateria.data("id") ? "-" : materiaText,
+                    precioLista: parseFloat($("#txtPrecioLista").val().replace(',', '.')),
+                    precio: parseFloat($("#txtPrecio").val().replace(',', '.')),
+                    contado: parseFloat($("#txtContado").val().replace(',', '.')),
+                    existencia: parseInt($("#txtExistencia").val()),
+                    novedad: $("#chkNovedad").is(":checked"),
+                    disponible: $("#chkDisponible").is(":checked"),
+                    cargadoUltimaVezPorExcel: false
+                };
+
+                return libro;
+            }
+
+            async function libroEstaEnBD(libro) {
+                // rta -1 = Error
+                // rta 0 = Ya existe, está igual a la base
+                // rta 1 = Nuevo
+                // rta 2 = Update
+                // rta -2 = Está intentando crear un libro con un código que ya existe
+
+                let rta = 0;
+
+                try {
+                    const libroBD = await $.ajax({
+                        url: `/api/Libro/TraerLibroXCodigo/${libro.codigo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    if (libroBD) {
+                        libro.id = libroBD.id;
+
+                        if (sonLibrosIguales(libro, libroBD)) {
+                            rta = 0; // Ya existe y está igual
+                        } else {
+                            if ($("#rbtAlta").is(":checked")) {
+                                rta = -2; // Intentando crear con código existente
+                            } else {
+                                rta = 2; // Actualizar
+                            }
+                        }
+                    } else {
+                        rta = 1; // Nuevo
+                    }
+
+                    return rta;
+                } catch (error) {
+                    if ($("#rbtAlta").is(":checked")) {
+                        if (error.status = 404) {
+                            rta = 1;
+                        }
+                    } else {
+                        console.error("Error verificando libro en BD:", error);
+                        rta = -1; // Error
+                    }
+                    return rta;
+                }
+            }
+
+            function sonLibrosIguales(libro1, libro2) {
+                return libro1.codigo === libro2.codigo &&
+                    libro1.isbn === libro2.isbn &&
+                    libro1.ean13 === libro2.ean13 &&
+                    libro1.titulo === libro2.titulo &&
+                    libro1.idAutor === libro2.idAutor &&
+                    libro1.idSerie === libro2.idSerie &&
+                    libro1.idEditorial === libro2.idEditorial &&
+                    libro1.idMateria === libro2.idMateria &&
+                    parseFloat(libro1.precioLista) === parseFloat(libro2.precioLista) &&
+                    parseFloat(libro1.precio) === parseFloat(libro2.precio) &&
+                    parseFloat(libro1.contado) === parseFloat(libro2.contado) &&
+                    parseInt(libro1.existencia) === parseInt(libro2.existencia) &&
+                    libro1.novedad === libro2.novedad &&
+                    libro1.disponible === libro2.disponible;
+            }
+
+            async function guardarLibro(libro, opcion) {
+                // Opción 1 = Alta, Opción 2 = Modificar
+                try {
+                    const enBD = await libroEstaEnBD(libro);
+
+                    if (opcion === 1 && enBD === 1) {
+                        // Alta de libro nuevo
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/GuardarLibro",
+                                type: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(libro)
+                            });
+                            checkearResultado(response, 1);
+                        } catch (error) {
+                            console.error("Hubo un error al intentar agregar el libro:", error);
+                            toastError("Hubo un error al intentar agregar el libro.", "Error");
+                        }
+                    } else if (opcion === 2) {
+                        if (enBD === 2) {
+                            // Modificar libro existente
+                            try {
+                                const response = await $.ajax({
+                                    url: "/api/Libro/ModificarLibro",
+                                    type: "PUT",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(libro)
+                                });
+                                checkearResultado(response, 2);
+                            } catch (error) {
+                                console.error("Hubo un error al intentar modificar el libro:", error);
+                                toastError("Hubo un error al intentar modificar el libro.", "Error");
+                            }
+                        }
+                    } else if (enBD === -2) {
+                        toastTopDerecha("Ya existe un libro con ese código en la base de datos.", "Atención");
+                    } else if (enBD === 0) {
+                        toastTopDerecha("El libro ya existe en la base de datos.", "Atención");
+                    } else if (enBD === -1) {
+                        toastError("Hubo un error al verificar el libro en la base de datos.", "Error");
+                    }
+                } catch (error) {
+                    console.error("Error en guardarLibro:", error);
+                    toastError("Hubo un error al procesar la solicitud.", "Error");
+                }
+            }
+
+            function checkearResultado(rta, altaOMod) {
+                // altaOMod 1 = Alta, altaOMod 2 = Modificar
+                if (rta === 1) {
+                    if (altaOMod === 1) {
+                        toastExito("Libro agregado correctamente.", "Guardado Exitoso");
+                    } else if (altaOMod === 2) {
+                        toastExito("Libro modificado correctamente.", "Guardado Exitoso");
+                    }
+                    cargarCombos(2);
+                    limpiar();
+                } else if (rta === -1) {
+                    if (altaOMod === 1) {
+                        toastError("Hubo un error al intentar agregar el libro.", "Error");
+                    } else if (altaOMod === 2) {
+                        toastError("Hubo un error al intentar modificar el libro.", "Error");
+                    }
+                } else if (rta === 0) {
+                    toastTopDerecha("El libro ya existe en la base de datos.", "Atención");
+                } else if (rta === -2) {
+                    toastTopDerecha("Ya existe un libro con ese código en la base de datos.", "Atención");
+                }
+            }
+
+            function validarPrecioLista(precioOriginal) {
+                const contieneCaracteresInvalidos = /[^0-9.,]/.test(precioOriginal);
+
+                let limpio = precioOriginal.replace(/[^0-9.,]/g, "");
+
+                const partes = limpio.split(/[,\.]/);
+                if (partes.length > 2) {
+                    limpio = partes[0] + "," + partes[1];
+                }
+
+                if (contieneCaracteresInvalidos) {
+                    toastTopDerecha('El precio lista debe contener solo números y/o decimales.', "Sólo números");
+                }
+
+                limpio = limpio.replace('.', ',');
+
+                $("#txtPrecioLista").val(limpio);
+
+                if (limpio.trim() === "") {
+                    $("#txtPrecio").val("");
+                    $("#txtContado").val("");
+                    return null;
+                }
+
+                return limpio;
+            }
+
+            function calcularPrecios(precioStr) {
+                const precio = parseFloat(precioStr.replace(',', '.'));
+
+                if (!isNaN(precio)) {
+                    $("#txtPrecio").val((precio * 1.15).toFixed(2).replace('.', ','));
+                    $("#txtContado").val(precio.toFixed(2).replace('.', ','));
+                } else {
+                    $("#txtPrecio").val("");
+                    $("#txtContado").val("");
+                }
+            }
+
+            function visibilidadProgreso(visible) {
+                if (visible) {
+                    $(".progress-container").show();
+                    $("#prbLibros").css("width", "0%").attr("aria-valuenow", 0).text("0%");
+                    $("#lblLibrosProcesados").text("Libros procesados: 0");
+                    $("#lblLibrosRestantes").text("Libros restantes: 0");
+                } else {
+                    $(".progress-container").hide();
+                }
+            }
+
+            function actualizarProgresoLibrosProcesadosYRestantes(progreso, librosProcesados, librosRestantes) {
+                $("#prbLibros").css("width", progreso + "%").attr("aria-valuenow", progreso).text(progreso + "%");
+                $("#lblLibrosProcesados").text(`Libros procesados: ${librosProcesados}`);
+                $("#lblLibrosRestantes").text(`Libros restantes: ${librosRestantes}`);
+            }
+
+            async function processImportResult(result) {
+                if (result && result.length > 0) {
+                    const agregados = result[0];
+                    const modificados = result[1];
+                    const errores = result[2];
+                    const sinCambios = result[3];
+                    const total = result[4];
+                    const autores = result[5];
+                    const editoriales = result[6];
+                    const materias = result[7];
+                    const series = result[8];
+                    const tiempo = result[9];
+
+                    let mensaje = "";
+
+                    if (total > 0) {
+                        mensaje += `Se procesaron ${total} libros, de los cuales:\n`;
+                    }
+
+                    if (agregados > 0) {
+                        mensaje += `${agregados} se ${agregados > 1 ? 'agregaron' : 'agregó'}.\n`;
+                    }
+
+                    if (modificados > 0) {
+                        mensaje += `${modificados} se ${modificados > 1 ? 'modificaron' : 'modificó'}.\n`;
+                    }
+
+                    if (sinCambios > 0) {
+                        mensaje += `${sinCambios} no ${sinCambios > 1 ? 'tuvieron' : 'tuvo'} cambios.\n`;
+                    }
+
+                    if (errores > 0) {
+                        mensaje += `${errores} ${errores > 1 ? 'tuvieron' : 'tuvo'} errores al intentar agregar o ${errores > 1 ? 'modificarlos' : 'modificarlo'}.\n`;
+                    }
+
+                    if ((autores + editoriales + materias + series) > 1) {
+                        mensaje += "Además, se agregaron:\n";
+                    } else if (autores > 0 || editoriales > 0 || materias > 0 || series > 0) {
+                        mensaje += "Además, se agregó:\n";
+                    }
+
+                    if (autores === 1) {
+                        mensaje += `${autores} autor.\n`;
+                    } else if (autores > 1) {
+                        mensaje += `${autores} autores.\n`;
+                    }
+
+                    if (editoriales === 1) {
+                        mensaje += `${editoriales} editorial.\n`;
+                    } else if (editoriales > 1) {
+                        mensaje += `${editoriales} editoriales.\n`;
+                    }
+
+                    if (materias === 1) {
+                        mensaje += `${materias} materia.\n`;
+                    } else if (materias > 1) {
+                        mensaje += `${materias} materias.\n`;
+                    }
+
+                    if (series === 1) {
+                        mensaje += `${series} serie.\n`;
+                    } else if (series > 1) {
+                        mensaje += `${series} series.\n`;
+                    }
+
+                    const duracionMs = tiempo;
+                    const totalSeconds = Math.floor(duracionMs / 1000);
+
+                    const hours = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+                    const minutes = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+                    const seconds = String(totalSeconds % 60).padStart(2, '0');
+
+                    mensaje += `El proceso duró: ${hours}:${minutes}:${seconds}.`;
+
+                    if (agregados === 0 && modificados === 0 && sinCambios === 0 && errores === 0) {
+                        toastTopDerecha("No se encontraron libros para agregar o modificar.", "Atención");
+                    } else if (mensaje) {
+                        toastExito(mensaje, "Éxito");
+                        cargarCombos(2);
+                        await setNextCodigo();
+                    } else {
+                        toastTopDerecha("Se corrió el proceso y no hubo cambios.");
+                    }
+                } else {
+                    toastError("No se recibió resultado del servidor.", "Error");
+                }
+            }
+
+            function setupProgressWebSocket() {
+                const socket = new WebSocket("ws://serverfake/progress");
+
+                socket.onmessage = function (event) {
+                    const data = JSON.parse(event.data);
+                    actualizarProgresoLibrosProcesadosYRestantes(data.progreso, data.librosProcesados, data.librosRestantes);
+                };
+
+                socket.onerror = function (error) {
+                    console.error("Error de WebSocket:", error);
+                };
+
+                socket.onclose = function (event) {
+                    console.log("Conexión WebSocket cerrada");
+                };
+            }
+        });
+
+
+
+    </script>
+</body>
+</html>

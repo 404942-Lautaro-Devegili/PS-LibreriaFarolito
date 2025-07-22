@@ -1,0 +1,654 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Usuarios</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        .user-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .btn-guardar {
+            font-size: 1.2rem;
+            padding: 8px 25px;
+        }
+
+        .user-row {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .user-row:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+            }
+
+        .table-active {
+            background-color: rgba(0, 123, 255, 0.2) !important;
+        }
+
+        .password-toggle {
+            position: relative;
+        }
+
+            .password-toggle .toggle-btn {
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                border: none;
+                background: none;
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1><i class="bi bi-people"></i> Sistema de Gestión de Usuarios</h1>
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="radio-group">
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="userAction" id="rbtAlta" checked>
+                        <label class="form-check-label" for="rbtAlta">
+                            <i class="bi bi-person-plus"></i> Nuevo Usuario
+                        </label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="userAction" id="rbtMod">
+                        <label class="form-check-label" for="rbtMod">
+                            <i class="bi bi-person-gear"></i> Modificar Usuario
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 id="cardTitle"><i class="bi bi-person-plus"></i> Datos del Usuario</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="userForm">
+                            <div class="form-group">
+                                <label for="txtNombre"><i class="bi bi-person"></i> Nombre:</label>
+                                <input type="text" class="form-control" id="txtNombre" placeholder="Ingrese nombre" maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtApellido"><i class="bi bi-person"></i> Apellido:</label>
+                                <input type="text" class="form-control" id="txtApellido" placeholder="Ingrese apellido" maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtUsuario"><i class="bi bi-at"></i> Usuario:</label>
+                                <input type="text" class="form-control" id="txtUsuario" placeholder="Ingrese nombre de usuario" maxlength="100">
+                            </div>
+                            <div class="form-group">
+                                <label for="txtPassword"><i class="bi bi-key"></i> Contraseña:</label>
+                                <div class="password-toggle">
+                                    <input type="password" class="form-control" id="txtPassword" placeholder="Ingrese contraseña" maxlength="100">
+                                    <button type="button" class="toggle-btn" id="togglePassword">
+                                        <i class="bi bi-eye"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="cboRol"><i class="bi bi-shield"></i> Rol:</label>
+                                <select class="form-control" id="cboRol">
+                                    <option value="">Seleccione un rol</option>
+                                </select>
+                            </div>
+                            <div class="form-check mb-3">
+                                <input type="checkbox" class="form-check-input" id="chkActivo" checked>
+                                <label class="form-check-label" for="chkActivo">
+                                    <i class="bi bi-check-circle"></i> Usuario Activo
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="card-footer">
+                        <div class="d-flex gap-2">
+                            <button type="button" id="btnGuardar" class="btn btn-primary btn-guardar">
+                                <i class="bi bi-save"></i> Crear Usuario
+                            </button>
+                            <button type="button" id="btnLimpiar" class="btn btn-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-people-fill"></i> Usuarios del Sistema</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive user-grid">
+                            <table class="table table-striped table-hover mb-0" id="dgvUsuarios">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="display:none;">ID</th>
+                                        <th>Nombre</th>
+                                        <th>Apellido</th>
+                                        <th>Usuario</th>
+                                        <th>Rol</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info adicional para modo modificación -->
+        <div class="row mt-3" id="infoModificacion" style="display: none;">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Modo Modificación:</strong> Seleccione un usuario de la tabla para modificar sus datos.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            console.log("ModificacionUsuarios.html loaded"); // Debug
+
+            // Verifico múltiples veces que la sesión esté establecida
+            let sessionReady = false;
+            let attempts = 0;
+            const maxAttempts = 10;
+
+            while (!sessionReady && attempts < maxAttempts) {
+                try {
+                    console.log(`Session check attempt ${attempts + 1}`); // Debug
+
+                    const sessionCheck = await $.ajax({
+                        url: "/api/Usuario/CheckSession",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    console.log("Session check result:", sessionCheck); // Debug
+
+                    if (sessionCheck === true) {
+                        sessionReady = true;
+                        console.log("Session is ready!"); // Debug
+                    } else {
+                        console.log("Session not ready, redirecting to login"); // Debug
+                        window.location.href = "/Login/Login.html";
+                        return;
+                    }
+                } catch (error) {
+                    console.log("Session check failed, attempt:", attempts + 1, error); // Debug
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        console.log("Max attempts reached, redirecting to login"); // Debug
+                        window.location.href = "/Login/Login.html";
+                        return;
+                    }
+                    // Espero un poco antes del próximo intento
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+
+            // Si llegué acá, la sesión está lista
+            console.log("Session verified, initializing page..."); // Debug
+
+            // Variables globales
+            let rolesGlobal = [];
+            let usuariosGlobal = [];
+            let usuarioActual = null;
+
+            try {
+                await inicializarPagina();
+            } catch (error) {
+                console.error("Error initializing page:", error);
+                toastError("Error al inicializar la página", "Error");
+            }
+
+            async function inicializarPagina() {
+                console.log("Starting page initialization..."); // Debug
+
+                // Cargo navbar si no está cargado
+                if ($('#navbar-container').is(':empty')) {
+                    await new Promise((resolve) => {
+                        $('#navbar-container').load('/Nav/Navbar.html', function () {
+                            resolve();
+                        });
+                    });
+                }
+
+                // Verifico permisos de admin
+                const isAdmin = await verificarPermisoAdmin();
+                if (!isAdmin) {
+                    toastError("No tiene permisos para acceder a esta página", "Acceso Denegado");
+                    window.location.href = "/Inicio.html";
+                    return;
+                }
+
+                // Inicializar datos
+                await cargarRoles();
+                await cargarUsuarios();
+                configurarEventos();
+
+                console.log("Page initialized successfully"); // Debug
+            }
+
+            async function verificarPermisoAdmin() {
+                try {
+                    console.log("Checking admin permissions..."); // Debug
+                    const isAdmin = await $.ajax({
+                        url: "/api/Usuario/CheckAdminRole",
+                        type: "GET",
+                        dataType: "json"
+                    });
+                    console.log("Admin check result:", isAdmin); // Debug
+                    return isAdmin === true;
+                } catch (error) {
+                    console.error("Error checking admin permissions:", error);
+                    return false;
+                }
+            }
+
+            function configurarEventos() {
+                console.log("Configuring events..."); // Debug
+
+                // Eventos de radio buttons
+                $("#rbtAlta").change(function () {
+                    if ($(this).is(":checked")) {
+                        limpiarFormulario();
+                        $("#btnGuardar").html('<i class="bi bi-save"></i> Crear Usuario');
+                        $("#cardTitle").html('<i class="bi bi-person-plus"></i> Datos del Usuario');
+                        $("#infoModificacion").hide();
+                        usuarioActual = null;
+                        $('#dgvUsuarios tbody tr').removeClass('table-active');
+                    }
+                });
+
+                $("#rbtMod").change(function () {
+                    if ($(this).is(":checked")) {
+                        limpiarFormulario();
+                        $("#btnGuardar").html('<i class="bi bi-pencil"></i> Modificar Usuario');
+                        $("#cardTitle").html('<i class="bi bi-person-gear"></i> Modificar Usuario');
+                        $("#infoModificacion").show();
+                        usuarioActual = null;
+                    }
+                });
+
+                // Toggle de contraseña
+                $("#togglePassword").click(function () {
+                    const passwordField = $("#txtPassword");
+                    const icon = $(this).find("i");
+
+                    if (passwordField.attr("type") === "password") {
+                        passwordField.attr("type", "text");
+                        icon.removeClass("bi-eye").addClass("bi-eye-slash");
+                    } else {
+                        passwordField.attr("type", "password");
+                        icon.removeClass("bi-eye-slash").addClass("bi-eye");
+                    }
+                });
+
+                // Botón guardar
+                $("#btnGuardar").click(async function () {
+                    if (!validarFormulario()) {
+                        return;
+                    }
+
+                    const usuario = crearUsuario();
+
+                    if ($("#rbtAlta").is(":checked")) {
+                        await guardarUsuario(usuario);
+                    } else if ($("#rbtMod").is(":checked")) {
+                        if (!usuarioActual) {
+                            toastTopDerecha("Debe seleccionar un usuario de la tabla para modificar", "Sin Selección");
+                            return;
+                        }
+                        usuario.id = usuarioActual.id;
+                        await modificarUsuario(usuario);
+                    }
+                });
+
+                $("#btnLimpiar").click(function () {
+                    limpiarFormulario();
+                });
+
+                // Eventos de tabla
+                $('#dgvUsuarios').on('click', '.user-row', function () {
+                    if ($("#rbtMod").is(":checked")) {
+                        const row = $(this);
+                        const id = parseInt(row.find('td:eq(0)').text());
+
+                        usuarioActual = usuariosGlobal.find(u => u.id === id);
+                        if (usuarioActual) {
+                            llenarFormulario(usuarioActual);
+                            $('#dgvUsuarios tbody tr').removeClass('table-active');
+                            row.addClass('table-active');
+                            toastInfo(`Usuario "${usuarioActual.user}" seleccionado para modificar`, "Usuario Seleccionado");
+                        }
+                    }
+                });
+
+                $('#dgvUsuarios').on('click', '.btn-edit', function (e) {
+                    e.stopPropagation();
+                    const id = parseInt($(this).data('id'));
+                    editarUsuario(id);
+                });
+
+                // Navegación con Enter
+                $('input, select').on('keydown', function (e) {
+                    if (e.keyCode === 13) {
+                        e.preventDefault();
+                        const inputs = $('input:visible, select:visible, button:visible').not(':disabled');
+                        const idx = inputs.index(this);
+                        if (idx < inputs.length - 1) {
+                            inputs[idx + 1].focus();
+                        } else {
+                            $("#btnGuardar").click();
+                        }
+                    }
+                });
+            }
+
+            async function cargarRoles() {
+                try {
+                    console.log("Loading roles..."); // Debug
+                    rolesGlobal = await $.ajax({
+                        url: "/api/Usuario/TraerRoles",
+                        type: "GET",
+                        dataType: "json",
+                        timeout: 10000 // 10 segundos de timeout
+                    });
+
+                    console.log("Roles loaded successfully:", rolesGlobal); // Debug
+
+                    $('#cboRol').empty().append('<option value="">Seleccione un rol</option>');
+                    rolesGlobal.forEach(rol => {
+                        $('#cboRol').append(`<option value="${rol.id}">${rol.nombre} - ${rol.descripcion}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error loading roles:", error);
+                    if (error.status === 403) {
+                        toastError("No tiene permisos para acceder a esta funcionalidad", "Acceso Denegado");
+                        window.location.href = "/Inicio.html";
+                    } else {
+                        toastError(`Error al cargar roles: ${error.status} - ${error.statusText}`, "Error");
+                    }
+                }
+            }
+
+            async function cargarUsuarios() {
+                try {
+                    console.log("Loading users..."); // Debug
+                    usuariosGlobal = await $.ajax({
+                        url: "/api/Usuario/TraerUsuarios",
+                        type: "GET",
+                        dataType: "json",
+                        timeout: 10000 // 10 segundos de timeout
+                    });
+
+                    console.log("Users loaded successfully:", usuariosGlobal); // Debug
+                    llenarTablaUsuarios(usuariosGlobal);
+                } catch (error) {
+                    console.error("Error loading users:", error);
+                    if (error.status === 403) {
+                        toastError("No tiene permisos para acceder a esta funcionalidad", "Acceso Denegado");
+                        window.location.href = "/Inicio.html";
+                    } else {
+                        toastError(`Error al cargar usuarios: ${error.status} - ${error.statusText}`, "Error");
+                    }
+                }
+            }
+
+            // Resto de funciones...
+            function llenarTablaUsuarios(usuarios) {
+                const tbody = $('#dgvUsuarios tbody');
+                tbody.empty();
+
+                if (!usuarios || usuarios.length === 0) {
+                    tbody.append(`
+                <tr>
+                    <td colspan="7" class="text-center text-muted">
+                        <i class="bi bi-inbox"></i> No hay usuarios registrados
+                    </td>
+                </tr>
+            `);
+                    return;
+                }
+
+                usuarios.forEach(usuario => {
+                    const estadoBadge = usuario.activo
+                        ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
+                        : '<span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactivo</span>';
+
+                    const rolNombre = usuario.rol ? usuario.rol.nombre : 'Sin rol';
+
+                    const row = `
+                <tr class="user-row">
+                    <td style="display:none;">${usuario.id}</td>
+                    <td><strong>${usuario.nombre}</strong></td>
+                    <td>${usuario.apellido}</td>
+                    <td><code>${usuario.user}</code></td>
+                    <td><span class="badge bg-primary">${rolNombre}</span></td>
+                    <td>${estadoBadge}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${usuario.id}" title="Editar usuario">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+                    tbody.append(row);
+                });
+            }
+
+            function editarUsuario(id) {
+                $("#rbtMod").prop('checked', true).trigger('change');
+                usuarioActual = usuariosGlobal.find(u => u.id === id);
+                if (usuarioActual) {
+                    llenarFormulario(usuarioActual);
+                    $('#dgvUsuarios tbody tr').removeClass('table-active');
+                    $('#dgvUsuarios tbody tr').each(function () {
+                        if (parseInt($(this).find('td:eq(0)').text()) === id) {
+                            $(this).addClass('table-active');
+                        }
+                    });
+                    toastInfo(`Usuario "${usuarioActual.user}" listo para modificar`, "Modo Edición");
+                }
+            }
+
+            function llenarFormulario(usuario) {
+                $('#txtNombre').val(usuario.nombre || '');
+                $('#txtApellido').val(usuario.apellido || '');
+                $('#txtUsuario').val(usuario.user || '');
+                $('#txtPassword').val(usuario.password || '');
+                $('#cboRol').val(usuario.idRol || '');
+                $('#chkActivo').prop('checked', usuario.activo);
+            }
+
+            function limpiarFormulario() {
+                $('#txtNombre').val('');
+                $('#txtApellido').val('');
+                $('#txtUsuario').val('');
+                $('#txtPassword').val('');
+                $('#cboRol').val('');
+                $('#chkActivo').prop('checked', true);
+                usuarioActual = null;
+                $('#dgvUsuarios tbody tr').removeClass('table-active');
+                $("#txtPassword").attr("type", "password");
+                $("#togglePassword i").removeClass("bi-eye-slash").addClass("bi-eye");
+                $('#txtNombre').focus();
+            }
+
+            function validarFormulario() {
+                let esValido = true;
+                let mensaje = "";
+
+                if (!$('#txtNombre').val().trim()) {
+                    mensaje += "• El nombre es obligatorio\n";
+                    esValido = false;
+                }
+
+                if (!$('#txtApellido').val().trim()) {
+                    mensaje += "• El apellido es obligatorio\n";
+                    esValido = false;
+                }
+
+                if (!$('#txtUsuario').val().trim()) {
+                    mensaje += "• El nombre de usuario es obligatorio\n";
+                    esValido = false;
+                }
+
+                if (!$('#txtPassword').val().trim()) {
+                    mensaje += "• La contraseña es obligatoria\n";
+                    esValido = false;
+                }
+
+                if (!$('#cboRol').val()) {
+                    mensaje += "• Debe seleccionar un rol\n";
+                    esValido = false;
+                }
+
+                const usuario = $('#txtUsuario').val().trim();
+                if (usuario && usuario.length < 3) {
+                    mensaje += "• El nombre de usuario debe tener al menos 3 caracteres\n";
+                    esValido = false;
+                }
+
+                const password = $('#txtPassword').val().trim();
+                if (password && password.length < 4) {
+                    mensaje += "• La contraseña debe tener al menos 4 caracteres\n";
+                    esValido = false;
+                }
+
+                if ($("#rbtAlta").is(":checked") && usuario) {
+                    const usuarioExistente = usuariosGlobal.find(u =>
+                        u.user.toLowerCase() === usuario.toLowerCase()
+                    );
+                    if (usuarioExistente) {
+                        mensaje += "• Ya existe un usuario con ese nombre de usuario\n";
+                        esValido = false;
+                    }
+                }
+
+                if (!esValido) {
+                    toastTopDerecha(mensaje, "Validación de Datos");
+                }
+
+                return esValido;
+            }
+
+            function crearUsuario() {
+                return {
+                    nombre: $('#txtNombre').val().trim(),
+                    apellido: $('#txtApellido').val().trim(),
+                    user: $('#txtUsuario').val().trim(),
+                    password: $('#txtPassword').val().trim(),
+                    activo: $('#chkActivo').is(':checked'),
+                    idRol: parseInt($('#cboRol').val())
+                };
+            }
+
+            async function guardarUsuario(usuario) {
+                try {
+                    console.log("Saving user:", usuario); // Debug
+                    const resultado = await $.ajax({
+                        url: "/api/Usuario/GuardarUsuario",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(usuario),
+                        timeout: 10000
+                    });
+
+                    console.log("Save result:", resultado); // Debug
+
+                    if (resultado && resultado.length > 0 && resultado[0] > 0) {
+                        toastExito(`Usuario "${usuario.user}" creado exitosamente`, "Usuario Creado");
+                        limpiarFormulario();
+                        await cargarUsuarios();
+                    } else {
+                        toastError("Error al crear el usuario", "Error");
+                    }
+                } catch (error) {
+                    console.error("Error saving user:", error);
+                    if (error.status === 403) {
+                        toastError("No tiene permisos para crear usuarios", "Acceso Denegado");
+                    } else {
+                        const mensaje = error.responseJSON?.message || error.statusText || "Error desconocido";
+                        toastError(`Error al guardar el usuario: ${mensaje}`, "Error");
+                    }
+                }
+            }
+
+            async function modificarUsuario(usuario) {
+                try {
+                    console.log("Modifying user:", usuario); // Debug
+                    const resultado = await $.ajax({
+                        url: "/api/Usuario/ModificarUsuario",
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(usuario),
+                        timeout: 10000
+                    });
+
+                    console.log("Modify result:", resultado); // Debug
+
+                    if (resultado === 1) {
+                        toastExito(`Usuario "${usuario.user}" modificado exitosamente`, "Usuario Actualizado");
+                        limpiarFormulario();
+                        await cargarUsuarios();
+                        $("#rbtAlta").prop('checked', true).trigger('change');
+                    } else {
+                        toastError("Error al modificar el usuario", "Error");
+                    }
+                } catch (error) {
+                    console.error("Error modifying user:", error);
+                    if (error.status === 403) {
+                        toastError("No tiene permisos para modificar usuarios", "Acceso Denegado");
+                    } else {
+                        const mensaje = error.responseJSON?.message || error.statusText || "Error desconocido";
+                        toastError(`Error al modificar el usuario: ${mensaje}`, "Error");
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

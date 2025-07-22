@@ -1,0 +1,67 @@
+mercadopago:
+Mi cuenta:
+
+Número de aplicación: 
+8760885237158629
+CheckoutAPI
+
+Public Key: 
+TEST-3a471375-6b83-4e4e-bda8-4f1f510a2da0
+
+Access Token: 
+TEST-8760885237158629-052822-b21272a91c04e7de016fb0365d81a73b-523453391
+
+Cuentas de prueba:
+Vendedor:
+TESTUSER1618237595
+WMbF7fCvfk
+
+Comprador
+TESTUSER1651065437
+PzCbRrV92c
+
+Dentro de la cuenta de prueba "Vendedor"  de prueba
+Datos LibreriaFarolitoTest:
+
+UserID: 
+2463172721
+
+Número de aplicación: 
+715881156935809
+
+Credenciales de producción de La cuenta de Prueba:
+
+Public Key: 
+APP_USR-142d3aca-489c-41a3-b477-909c1eab62ff
+
+Access Token:
+APP_USR-715881156935809-053108-42a4944033153d303573ccf99823d919-2463172721
+
+Client ID:
+715881156935809
+
+Client Secret:
+wYU2AWWozQPGSzC6SchBFC3Z6uYfQoew
+
+
+
+Mastercard
+5031 7557 3453 0604
+123
+11/30
+Visa
+4509 9535 6623 3704
+123
+11/30
+American Express
+3711 803032 57522
+1234
+11/30
+Mastercard Debito
+5287 3383 1025 3304
+123
+11/30
+Visa Debito
+4002 7686 9439 5619
+123
+11/30

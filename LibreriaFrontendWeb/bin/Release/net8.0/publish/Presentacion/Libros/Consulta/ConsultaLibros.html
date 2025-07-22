@@ -1,0 +1,695 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta de Libros</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .datalist-dropdown {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            margin-top: 20px;
+        }
+
+        .book-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        #dgvLibros {
+            font-size: 0.9rem;
+        }
+
+            #dgvLibros th, #dgvLibros td {
+                white-space: nowrap;
+                vertical-align: middle;
+            }
+
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Consulta de Libros</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="txtTitulo">Título:</label>
+                    <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                </div>
+
+                <div class="form-group">
+                    <label for="cboSerie">Serie:</label>
+                    <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                    <datalist id="serieList" class="datalist-dropdown"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboAutor">Autor:</label>
+                    <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                    <datalist id="autorList" class="datalist-dropdown"></datalist>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="cboEditorial">Editorial:</label>
+                    <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                    <datalist id="editorialList" class="datalist-dropdown"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="cboMateria">Materia:</label>
+                    <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                    <datalist id="materiaList" class="datalist-dropdown"></datalist>
+                </div>
+
+                <div class="form-group">
+                    <label for="txtCodigo">Código:</label>
+                    <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3">
+            <div class="col-md-12 text-end">
+                <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Libros Encontrados</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive book-grid">
+                    <table class="table table-striped" id="dgvLibros">
+                        <thead>
+                            <tr>
+                                <th style="display: none;">IdLibro</th>
+                                <th>Código</th>
+                                <th>ISBN</th>
+                                <th>EAN13</th>
+                                <th>Título</th>
+                                <th>Serie</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Materia</th>
+                                <th>Precio</th>
+                                <th>Precio Lista</th>
+                                <th>Contado</th>
+                                <th>Existencia</th>
+                                <th>Últ. Mod.</th>
+                                <th>Novedad</th>
+                                <th>Disponible</th>
+                                <th>Últ. Mod. Excel</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+
+            // Variables globales
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+            let combosCambiados = 0;
+
+            // Variables para controlar búsquedas en proceso
+            let searchInProgress = {
+                autor: false,
+                editorial: false,
+                materia: false,
+                serie: false
+            };
+
+            // Diccionarios para almacenar las selecciones
+            let seleccionados = {
+                autor: { id: null, text: null },
+                editorial: { id: null, text: null },
+                materia: { id: null, text: null },
+                serie: { id: null, text: null }
+            };
+
+            // Inicializar
+            await cargarCombos(1);
+            setearCombos();
+            await traerLibrosXTituloAutorEditorialYOCodigo();
+
+            // Eventos de campos de búsqueda
+            $("#txtTitulo").blur(async function () {
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            $("#txtCodigo").blur(async function () {
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para autor
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.autor = true;
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    searchInProgress.autor = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboAutor").on("change", async function () {
+                const selectedText = $(this).val();
+
+                // Si hay una búsqueda en progreso, esperamos un momento
+                if (searchInProgress.autor) {
+                    setTimeout(() => {
+                        $("#cboAutor").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#autorList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.autor = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para editorial
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.editorial = true;
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    searchInProgress.editorial = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.editorial) {
+                    setTimeout(() => {
+                        $("#cboEditorial").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#editorialList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.editorial = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para materia
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.materia = true;
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    searchInProgress.materia = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.materia) {
+                    setTimeout(() => {
+                        $("#cboMateria").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#materiaList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.materia = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para serie
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.serie = true;
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    searchInProgress.serie = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.serie) {
+                    setTimeout(() => {
+                        $("#cboSerie").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#serieList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.serie = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Evento de botón limpiar
+            $("#btnLimpiar").click(async function () {
+                await limpiar();
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Evento de tecla Enter para todos los controles
+            $("input, select").keydown(function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $("input, select").filter(":visible:not([readonly])");
+                    const idx = inputs.index(this);
+                    if (idx === inputs.length - 1) {
+                        inputs[0].focus();
+                    } else {
+                        inputs[idx + 1].focus();
+                    }
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Setup numeric field validation for código field
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, async function (validation, element) {
+                // Custom callback for código field - trigger search when valid
+                if (validation.isValid && element.val()) {
+                    await traerLibrosXTituloAutorEditorialYOCodigo();
+                }
+            });
+
+            $("#txtCodigo").on("change", async function () {
+                var codigo = $(this).val();
+                const validation = validarCodigo(codigo);
+                if (validation.isValid) {
+                    await traerLibrosXTituloAutorEditorialYOCodigo();
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Funciones
+            async function cargarCombos(opcion) {
+                // Opción 1: Usar listas globales, Opción 2: Traer de la base
+                if (opcion === 1) {
+                    // Cargar autores
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    // Cargar editoriales
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    // Cargar materias
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    // Cargar series
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                } else {
+                    // Recargar todo desde la base
+                    try {
+                        const autores = await $.ajax({
+                            url: "/api/Libro/TraerAutores",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const editoriales = await $.ajax({
+                            url: "/api/Libro/TraerEditoriales",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const materias = await $.ajax({
+                            url: "/api/Libro/TraerMaterias",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const series = await $.ajax({
+                            url: "/api/Libro/TraerSeries",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        autoresGlobal = autores;
+                        editorialesGlobal = editoriales;
+                        materiasGlobal = materias;
+                        seriesGlobal = series;
+
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    } catch (error) {
+                        console.error("Error cargando datos:", error);
+                        $("#autorList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#editorialList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#materiaList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#serieList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            function setearCombos() {
+                // Establecer "No tiene" como valor inicial para todos los combos
+                seleccionarPrimerElemento("#cboAutor", "#autorList", "autor");
+                seleccionarPrimerElemento("#cboEditorial", "#editorialList", "editorial");
+                seleccionarPrimerElemento("#cboMateria", "#materiaList", "materia");
+                seleccionarPrimerElemento("#cboSerie", "#serieList", "serie");
+            }
+
+            function seleccionarPrimerElemento(comboSelector, listSelector, tipo) {
+                const firstOption = $(listSelector + " option:first");
+                if (firstOption.length > 0) {
+                    $(comboSelector).val(firstOption.val());
+                    seleccionados[tipo] = {
+                        id: firstOption.data("id"),
+                        text: firstOption.val()
+                    };
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${encodeURIComponent(searchText)}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    console.error("Error buscando coincidentes:", error);
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            async function limpiar() {
+                $("#txtCodigo").val("");
+                $("#txtTitulo").val("");
+                await cargarCombos(1);
+                setearCombos();
+                $("#dgvLibros tbody").empty();
+                // Limpiar selecciones
+                seleccionados = {
+                    autor: { id: null, text: null },
+                    editorial: { id: null, text: null },
+                    materia: { id: null, text: null },
+                    serie: { id: null, text: null }
+                };
+            }
+
+            async function traerLibrosXTituloAutorEditorialYOCodigo() {
+                const titulo = $("#txtTitulo").val() || null;
+                const codigo = $("#txtCodigo").val() ? parseInt($("#txtCodigo").val()) : null;
+
+                // Obtener IDs de las selecciones guardadas
+                const idAutor = seleccionados.autor.id;
+                const idSerie = seleccionados.serie.id;
+                const idEditorial = seleccionados.editorial.id;
+                const idMateria = seleccionados.materia.id;
+
+                // Filtrar "No tiene" (id = 1)
+                const finalIdAutor = idAutor === 1 ? null : idAutor;
+                const finalIdSerie = idSerie === 1 ? null : idSerie;
+                const finalIdEditorial = idEditorial === 1 ? null : idEditorial;
+                const finalIdMateria = idMateria === 1 ? null : idMateria;
+
+                try {
+                    const libros = await $.ajax({
+                        url: "/api/Libro/BuscarLibros",
+                        type: "GET",
+                        data: {
+                            titulo: titulo,
+                            idSerie: finalIdSerie,
+                            idAutor: finalIdAutor,
+                            idEditorial: finalIdEditorial,
+                            idMateria: finalIdMateria,
+                            codigo: codigo
+                        },
+                        dataType: "json"
+                    });
+
+                    if (libros && libros.length > 0) {
+                        llenarGrilla(libros);
+                    } else {
+                        $("#dgvLibros tbody").empty();
+                        toastInfo("No se encontraron libros con los datos ingresados.", "Sin resultados");
+                    }
+                } catch (error) {
+                    console.error("Error buscando libros:", error);
+                    toastError("Error al buscar libros. Por favor intente nuevamente.", "Error");
+                }
+            }
+
+            function llenarGrilla(libros) {
+                const tbody = $("#dgvLibros tbody");
+                tbody.empty();
+
+                libros.forEach(function (libro) {
+                    const row = $("<tr>");
+
+                    row.append($("<td>").text(libro.id).hide());
+                    row.append($("<td>").text(libro.codigo));
+                    row.append($("<td>").text(libro.isbn));
+                    row.append($("<td>").text(libro.ean13));
+                    row.append($("<td>").text(libro.titulo));
+                    row.append($("<td>").text(libro.serie));
+                    row.append($("<td>").text(libro.autor));
+                    row.append($("<td>").text(libro.editorial));
+                    row.append($("<td>").text(libro.materia));
+                    row.append($("<td>").text(libro.precio ? parseFloat(libro.precio).toFixed(2) : ""));
+                    row.append($("<td>").text(libro.precioLista ? parseFloat(libro.precioLista).toFixed(2) : ""));
+                    row.append($("<td>").text(libro.contado ? parseFloat(libro.contado).toFixed(2) : ""));
+                    row.append($("<td>").text(libro.existencia));
+                    row.append($("<td>").text(libro.fechaMod ? new Date(libro.fechaMod).toLocaleString() : ""));
+
+                    // Checkboxes
+                    row.append($("<td>").append($("<input>").attr("type", "checkbox").prop("checked", libro.novedad).attr("disabled", true)));
+                    row.append($("<td>").append($("<input>").attr("type", "checkbox").prop("checked", libro.disponible).attr("disabled", true)));
+                    row.append($("<td>").append($("<input>").attr("type", "checkbox").prop("checked", libro.cargadoUltimaVezPorExcel).attr("disabled", true)));
+
+                    tbody.append(row);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

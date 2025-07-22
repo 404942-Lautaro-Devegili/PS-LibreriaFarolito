@@ -1,0 +1,948 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación de Estados de Reservas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-imprimir {
+            font-size: 1.5rem;
+            padding: 10px 30px;
+        }
+
+        .book-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .state-checkbox {
+            text-align: center;
+        }
+
+            .state-checkbox input[type="checkbox"] {
+                pointer-events: none;
+            }
+
+        .filter-checkboxes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+            .filter-checkboxes .form-check {
+                margin-bottom: 0;
+            }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Verificación de Estados de Reservas</h1>
+
+        <!-- Search Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Buscar Reservas</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtTitulo">Título del Libro:</label>
+                            <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboSerie">Serie:</label>
+                            <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                            <datalist id="serieList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboAutor">Autor:</label>
+                            <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                            <datalist id="autorList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboEditorial">Editorial:</label>
+                            <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                            <datalist id="editorialList"></datalist>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboMateria">Materia:</label>
+                            <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                            <datalist id="materiaList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtCodigo">Código del Libro:</label>
+                            <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboCliente">Cliente:</label>
+                            <input type="text" class="form-control" id="cboCliente" list="clienteList" placeholder="Seleccione o ingrese cliente">
+                            <datalist id="clienteList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtReserva">ID de Reserva:</label>
+                            <input type="text" class="form-control" id="txtReserva" placeholder="Ingrese ID de reserva">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filter by states -->
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <label class="form-label"><strong>Filtrar por Estado:</strong></label>
+                        <div class="filter-checkboxes">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkSinAsignar">
+                                <label class="form-check-label" for="chkSinAsignar">Sin Asignar</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkPedidas">
+                                <label class="form-check-label" for="chkPedidas">Pedidas</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkAsignadas">
+                                <label class="form-check-label" for="chkAsignadas">Asignadas</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="chkEntregadas">
+                                <label class="form-check-label" for="chkEntregadas">Entregadas</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="button" id="btnBuscar" class="btn btn-primary">Buscar</button>
+                        <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reservas Results Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Reservas Encontradas</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive book-grid">
+                    <table class="table table-striped" id="dgvReservas">
+                        <thead>
+                            <tr>
+                                <th>Imprimir</th>
+                                <th>Asignada</th>
+                                <th>Pedida</th>
+                                <th>Entregada</th>
+                                <th>ID Reserva</th>
+                                <th style="display:none;">ID Cliente</th>
+                                <th>Cliente</th>
+                                <th style="display:none;">ID Libro</th>
+                                <th>Seña</th>
+                                <th>Saldo</th>
+                                <th>Código</th>
+                                <th>Título</th>
+                                <th>Serie</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Materia</th>
+                                <th>Precio</th>
+                                <th>Precio Lista</th>
+                                <th>Contado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Imprimir Button -->
+        <div class="text-end mb-4">
+            <button type="button" id="btnImprimir" class="btn btn-success btn-imprimir" disabled>Imprimir</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+
+            // Variables globales
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+            let clientesGlobal = [];
+            let idsReservasImprimir = new Map(); // Acá guardamos las reservas que se van a imprimir
+            let combosCambiados = 0;
+
+            // Variables para controlar búsquedas en proceso
+            let searchInProgress = {
+                autor: false,
+                editorial: false,
+                materia: false,
+                serie: false,
+                cliente: false
+            };
+
+            // Diccionarios para almacenar las selecciones
+            let seleccionados = {
+                autor: { id: null, text: null },
+                editorial: { id: null, text: null },
+                materia: { id: null, text: null },
+                serie: { id: null, text: null },
+                cliente: { id: null, text: null }
+            };
+
+            // Inicializar
+            await cargarCombos(1);
+            await cargarClientes();
+            setearCombos();
+            await buscarReservas();
+
+            // Eventos para los checkboxes de filtro - acá si se marca uno que es opuesto al otro, lo desmarco
+            $('#chkSinAsignar').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#chkAsignadas').prop('checked', false);
+                }
+                $("#btnBuscar").trigger("click");
+            });
+
+            $('#chkAsignadas').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#chkSinAsignar').prop('checked', false);
+                }
+                $("#btnBuscar").trigger("click");
+            });
+
+            $('#chkPedidas').change(function () {
+                $("#btnBuscar").trigger("click");
+            });
+
+            $('#chkEntregadas').change(function () {
+                $("#btnBuscar").trigger("click");
+            });
+
+            // Eventos de campos de búsqueda
+            $("#txtTitulo").blur(function () {
+                if ($(this).val()) {
+                    $("#btnBuscar").trigger("click");
+                }
+            });
+
+            $("#txtCodigo").blur(function () {
+                if ($(this).val()) {
+                    $("#btnBuscar").trigger("click");
+                }
+            });
+
+            $("#txtReserva").blur(function () {
+                $("#btnBuscar").trigger("click");
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Validación para que el código y ID de reserva solo acepten números
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, async function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    await buscarReservas();
+                }
+            });
+
+            $("#txtCodigo").on("change", async function () {
+                var codigo = $(this).val();
+                const validation = validarCodigo(codigo);
+                if (validation.isValid) {
+                    await buscarReservas();
+                }
+            });
+
+            setupNumericFieldValidation("#txtReserva", function (valor) {
+                return validarCampoNumerico(valor, "ID de reserva");
+            }, async function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    await buscarReservas();
+                }
+            });
+
+            $("#txtReserva").on("change", async function () {
+                var reserva = $(this).val();
+                const validation = validarCampoNumerico(reserva, "ID de reserva");
+                if (validation.isValid) {
+                    await buscarReservas();
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////INICIO DE PARTE DE COMBOS///////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Eventos de combos para autor
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.autor = true;
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    searchInProgress.autor = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboAutor").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.autor) {
+                    setTimeout(() => {
+                        $("#cboAutor").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#autorList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.autor = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+
+                await buscarReservas();
+            });
+
+            // Eventos de combos para editorial
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.editorial = true;
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    searchInProgress.editorial = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.editorial) {
+                    setTimeout(() => {
+                        $("#cboEditorial").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#editorialList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.editorial = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+
+                await buscarReservas();
+            });
+
+            // Eventos de combos para materia
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.materia = true;
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    searchInProgress.materia = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.materia) {
+                    setTimeout(() => {
+                        $("#cboMateria").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#materiaList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.materia = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+
+                await buscarReservas();
+            });
+
+            // Eventos de combos para serie
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.serie = true;
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    searchInProgress.serie = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.serie) {
+                    setTimeout(() => {
+                        $("#cboSerie").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#serieList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.serie = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+
+                await buscarReservas();
+            });
+
+            // Eventos de combos para cliente
+            $("#cboCliente").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                    return;
+                }
+
+                if (searchText.length >= 3) {
+                    try {
+                        const clientes = await $.ajax({
+                            url: `/api/Cliente/TraerClientesXNombre?nombre=${encodeURIComponent(searchText)}`,
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        $('#clienteList').empty();
+                        clientes.forEach(cliente => {
+                            $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                        });
+                    } catch (error) {
+                        console.error("Error buscando clientes:", error);
+                    }
+                }
+            });
+
+            $("#cboCliente").on("change", function () {
+                const selectedText = $(this).val();
+                const selectedOption = $("#clienteList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.cliente = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                }
+                $("#btnBuscar").trigger("click");
+            });
+
+            // Funciones para cargar combos
+            async function cargarCombos(opcion) {
+                if (opcion === 1) {
+                    // Cargar autores
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    // Cargar editoriales
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    // Cargar materias
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    // Cargar series
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            function setearCombos() {
+                seleccionarPrimerElemento("#cboAutor", "#autorList", "autor");
+                seleccionarPrimerElemento("#cboEditorial", "#editorialList", "editorial");
+                seleccionarPrimerElemento("#cboMateria", "#materiaList", "materia");
+                seleccionarPrimerElemento("#cboSerie", "#serieList", "serie");
+            }
+
+            function seleccionarPrimerElemento(comboSelector, listSelector, tipo) {
+                const firstOption = $(listSelector + " option:first");
+                if (firstOption.length > 0) {
+                    $(comboSelector).val(firstOption.val());
+                    seleccionados[tipo] = {
+                        id: firstOption.data("id"),
+                        text: firstOption.val()
+                    };
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${encodeURIComponent(searchText)}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    console.error("Error buscando coincidentes:", error);
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            async function cargarClientes() {
+                try {
+                    clientesGlobal = await $.ajax({
+                        url: "/api/Cliente/TraerClientes",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#clienteList').empty();
+                    clientesGlobal.forEach(cliente => {
+                        $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error cargando clientes:", error);
+                    $('#clienteList').append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////FIN DE PARTE DE COMBOS////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Eventos de grilla - acá manejo cuando se marca el checkbox para imprimir
+            $('#dgvReservas').on('change', 'input.imprimir-checkbox', function () {
+                const row = $(this).closest('tr');
+                const idReserva = parseInt(row.find('td:eq(4)').text());
+                const idCliente = parseInt(row.find('td:eq(5)').text());
+                const isChecked = $(this).prop('checked');
+
+                if (isChecked) {
+                    // Agrego a la lista si no está ya
+                    if (!idsReservasImprimir.has(idReserva)) {
+                        idsReservasImprimir.set(idReserva, idCliente);
+                    }
+                } else {
+                    // Lo saco de la lista
+                    if (idsReservasImprimir.has(idReserva)) {
+                        idsReservasImprimir.delete(idReserva);
+                    }
+                }
+
+                // Habilito/deshabilito el botón de imprimir
+                actualizarBotonImprimir();
+            });
+
+            // Handlers de botones
+            $('#btnBuscar').click(async function () {
+                await buscarReservas();
+            });
+
+            $('#btnLimpiar').click(function () {
+                limpiarBusqueda();
+                $("#btnBuscar").trigger("click");
+            });
+
+            $('#btnImprimir').click(async function () {
+                await imprimirReservas();
+            });
+
+            function actualizarBotonImprimir() {
+                $('#btnImprimir').prop('disabled', idsReservasImprimir.size === 0);
+            }
+
+            function limpiarBusqueda() {
+                $('#txtTitulo').val('');
+                $('#txtCodigo').val('');
+                $('#txtReserva').val('');
+                $('#cboAutor').val('');
+                $('#cboEditorial').val('');
+                $('#cboMateria').val('');
+                $('#cboSerie').val('');
+                $('#cboCliente').val('');
+                $('#dgvReservas tbody').empty();
+                $('#chkSinAsignar').prop('checked', false);
+                $('#chkPedidas').prop('checked', false);
+                $('#chkAsignadas').prop('checked', false);
+                $('#chkEntregadas').prop('checked', false);
+
+                seleccionados = {
+                    autor: { id: null, text: null },
+                    editorial: { id: null, text: null },
+                    materia: { id: null, text: null },
+                    serie: { id: null, text: null },
+                    cliente: { id: null, text: null }
+                };
+
+                idsReservasImprimir.clear();
+                actualizarBotonImprimir();
+            }
+
+            async function buscarReservas() {
+                try {
+                    const titulo = $('#txtTitulo').val() || null;
+                    const codigo = $('#txtCodigo').val() ? parseInt($('#txtCodigo').val()) : -1;
+                    const idReserva = $('#txtReserva').val() ? parseInt($('#txtReserva').val()) : -1;
+
+                    // Obtengo los IDs de las selecciones guardadas
+                    const idAutor = seleccionados.autor.id;
+                    const idSerie = seleccionados.serie.id;
+                    const idEditorial = seleccionados.editorial.id;
+                    const idMateria = seleccionados.materia.id;
+
+                    // Filtro "No tiene" (id = 1)
+                    const finalIdAutor = idAutor === 1 ? -1 : idAutor;
+                    const finalIdSerie = idSerie === 1 ? -1 : idSerie;
+                    const finalIdEditorial = idEditorial === 1 ? -1 : idEditorial;
+                    const finalIdMateria = idMateria === 1 ? -1 : idMateria;
+
+                    // Cliente
+                    const idCliente = seleccionados.cliente.id ? seleccionados.cliente.id : -1;
+
+                    // Estados - acá paso 1 si está marcado o -1 si no
+                    const sinAsignar = $('#chkSinAsignar').is(':checked') ? 1 : -1;
+                    const pedida = $('#chkPedidas').is(':checked') ? 1 : -1;
+                    const asignada = $('#chkAsignadas').is(':checked') ? 1 : -1;
+                    const entregada = $('#chkEntregadas').is(':checked') ? 1 : -1;
+
+                    const response = await $.ajax({
+                        url: "/api/Reserva/TraerReservasXEstado",
+                        type: "GET",
+                        data: {
+                            titulo: titulo,
+                            idSerie: finalIdSerie,
+                            idAutor: finalIdAutor,
+                            idEditorial: finalIdEditorial,
+                            idMateria: finalIdMateria,
+                            codigo: codigo,
+                            idCliente: idCliente,
+                            idReserva: idReserva,
+                            sinAsignar: sinAsignar,
+                            pedida: pedida,
+                            asignada: asignada,
+                            entregada: entregada
+                        },
+                        dataType: "json"
+                    });
+
+                    if (response && response.length > 0) {
+                        llenarTablaReservas(response);
+                    } else {
+                        $('#dgvReservas tbody').empty();
+                        toastInfo('No se encontraron reservas con los criterios especificados', 'Sin resultados');
+                    }
+                } catch (error) {
+                    console.error("Error buscando reservas:", error);
+                    toastError('Error al buscar reservas: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+
+            function llenarTablaReservas(reservas) {
+                const tbody = $('#dgvReservas tbody');
+                tbody.empty();
+                // Reseteo las reservas seleccionadas para imprimir cuando cargo nueva data
+                idsReservasImprimir.clear();
+
+                reservas.forEach(reserva => {
+                    // Creo checkboxes de solo lectura para los estados
+                    const row = `
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input imprimir-checkbox"></td>
+                                    <td class="state-checkbox"><input type="checkbox" ${reserva.asignada ? 'checked' : ''} disabled></td>
+                                    <td class="state-checkbox"><input type="checkbox" ${reserva.pedida ? 'checked' : ''} disabled></td>
+                                    <td class="state-checkbox"><input type="checkbox" ${reserva.entregada ? 'checked' : ''} disabled></td>
+                                    <td>${reserva.idReserva}</td>
+                                    <td style="display:none;">${reserva.idCliente}</td>
+                                    <td>${reserva.nomCliente}</td>
+                                    <td style="display:none;">${reserva.idLibro}</td>
+                                    <td>${reserva.senia.toFixed(2)}</td>
+                                    <td>${reserva.saldo.toFixed(2)}</td>
+                                    <td>${reserva.codigo}</td>
+                                    <td>${reserva.titulo}</td>
+                                    <td>${reserva.serie}</td>
+                                    <td>${reserva.autor}</td>
+                                    <td>${reserva.editorial}</td>
+                                    <td>${reserva.materia}</td>
+                                    <td>${reserva.precio.toFixed(2)}</td>
+                                    <td>${reserva.precioLista.toFixed(2)}</td>
+                                    <td>${reserva.contado.toFixed(2)}</td>
+                                </tr>
+                            `;
+                    tbody.append(row);
+                });
+
+                actualizarBotonImprimir();
+            }
+
+            async function imprimirReservas() {
+                if (idsReservasImprimir.size === 0) {
+                    toastTopDerecha('Debe seleccionar al menos una reserva para imprimir', 'Sin reservas seleccionadas');
+                    return;
+                }
+
+                try {
+                    // Primero traigo las reservas completas por ID
+                    const idsArray = Array.from(idsReservasImprimir.keys());
+                    const reservasCompletas = await $.ajax({
+                        url: "/api/Reserva/TraerReservasXId",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(idsArray)
+                    });
+
+                    if (reservasCompletas && reservasCompletas.length > 0) {
+                        // Creo el PDF
+                        const pdfResult = await $.ajax({
+                            url: "/api/PDF/ReimprimirReservas",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(reservasCompletas)
+                        });
+
+                        if (pdfResult && pdfResult.path) {
+                            // Acá descargo el PDF en lugar de imprimirlo en el servidor
+                            descargarPDF(pdfResult.path, `reservas_${idsArray.length}_items.pdf`);
+                            toastExito(`PDF generado exitosamente para ${idsArray.length} reserva(s).`, 'PDF Generado');
+                        } else {
+                            toastError('No se pudo generar el PDF', 'Error');
+                        }
+                    } else {
+                        toastError('No se pudieron obtener los datos completos de las reservas', 'Error');
+                    }
+                } catch (error) {
+                    console.error("Error imprimiendo reservas:", error);
+                    toastError('Error al procesar la impresión: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+
+            // Función para descargar PDFs que funciona en cualquier dispositivo
+            function descargarPDF(nombreArchivo, nombreDescarga = null) {
+                const url = `/api/PDF/DescargarPDFReimpresion/${encodeURIComponent(nombreArchivo)}`;
+
+                // Creamos un link temporal para la descarga
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = nombreDescarga || nombreArchivo;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Navegación con Enter
+            $('input, select').on('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $('input:visible, select:visible, button:visible').not(':disabled');
+                    const idx = inputs.index(this);
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Si es el último input, disparo la búsqueda
+                        $('#btnBuscar').trigger('click');
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,520 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Proveedores</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        .provider-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .btn-guardar {
+            font-size: 1.2rem;
+            padding: 8px 25px;
+        }
+
+        .provider-row {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+            .provider-row:hover {
+                background-color: rgba(0, 123, 255, 0.1);
+            }
+
+        .table-active {
+            background-color: rgba(0, 123, 255, 0.2) !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1><i class="bi bi-truck"></i> Sistema de Gestión de Proveedores</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-plus-circle"></i> Gestión de Proveedores</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="radio-group">
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="mode" id="rbtAdd" value="add" checked>
+                                <label class="form-check-label" for="rbtAdd">
+                                    <i class="bi bi-plus"></i> Agregar
+                                </label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="mode" id="rbtMod" value="modify">
+                                <label class="form-check-label" for="rbtMod">
+                                    <i class="bi bi-pencil"></i> Modificar
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtNombre">Nombre:</label>
+                            <input type="text" class="form-control" id="txtNombre" placeholder="Ingrese nombre del proveedor">
+                        </div>
+
+                        <div class="form-group" id="divBuscadorProveedor" style="display: none;">
+                            <label for="cboBuscadorProveedor">Buscar Proveedor:</label>
+                            <input type="text" class="form-control" id="cboBuscadorProveedor" list="proveedorList" placeholder="Busque proveedor por nombre">
+                            <datalist id="proveedorList"></datalist>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtContacto">Contacto:</label>
+                            <input type="text" class="form-control" id="txtContacto" placeholder="Ingrese nombre del contacto">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtTelefono">Teléfono:</label>
+                            <input type="text" class="form-control" id="txtTelefono" placeholder="Ingrese teléfono">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtEmail">Email:</label>
+                            <input type="email" class="form-control" id="txtEmail" placeholder="Ingrese email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtDireccion">Dirección:</label>
+                            <textarea class="form-control" id="txtDireccion" rows="2" placeholder="Ingrese dirección"></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="txtObservaciones">Observaciones:</label>
+                            <textarea class="form-control" id="txtObservaciones" rows="3" placeholder="Observaciones adicionales"></textarea>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input class="form-check-input" type="checkbox" id="chkActivo" checked>
+                            <label class="form-check-label" for="chkActivo">
+                                Activo
+                            </label>
+                        </div>
+
+                        <div class="text-center">
+                            <button type="button" id="btnGuardar" class="btn btn-success btn-guardar">
+                                <i class="bi bi-check-circle"></i> Guardar Proveedor
+                            </button>
+                            <button type="button" id="btnLimpiar" class="btn btn-secondary">
+                                <i class="bi bi-arrow-clockwise"></i> Limpiar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="bi bi-truck-flatbed"></i> Proveedores del Sistema</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive provider-grid">
+                            <table class="table table-striped table-hover mb-0" id="dgvProveedores">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th style="display:none;">ID</th>
+                                        <th>Nombre</th>
+                                        <th>Contacto</th>
+                                        <th>Teléfono</th>
+                                        <th>Email</th>
+                                        <th>Estado</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-3" id="infoModificacion" style="display: none;">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    <strong>Modo Modificación:</strong> Seleccione un proveedor de la tabla para modificar sus datos.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            let attempts = 0;
+            const maxAttempts = 3;
+
+            while (attempts < maxAttempts) {
+                try {
+                    const sessionReady = await checkSession();
+                    if (sessionReady) {
+                        console.log("Sesión verificada, inicializando página...");
+                        break;
+                    } else {
+                        console.log("Sesión no lista, redirigiendo al login");
+                        window.location.href = "/Login/Login.html";
+                        return;
+                    }
+                } catch (error) {
+                    console.log("Error verificando sesión, intento:", attempts + 1, error);
+                    attempts++;
+                    if (attempts >= maxAttempts) {
+                        console.log("Máximo de intentos alcanzado, redirigiendo al login");
+                        window.location.href = "/Login/Login.html";
+                        return;
+                    }
+                    await new Promise(resolve => setTimeout(resolve, 500));
+                }
+            }
+
+            console.log("Sesión verificada, inicializando página...");
+
+            let proveedoresGlobal = [];
+            let proveedorActual = null;
+
+            try {
+                await inicializarPagina();
+            } catch (error) {
+                console.error("Error inicializando página:", error);
+                toastError("Error al inicializar la página", "Error");
+            }
+
+            async function inicializarPagina() {
+                console.log("Empezando inicialización de página...");
+
+                if ($('#navbar-container').is(':empty')) {
+                    await new Promise((resolve) => {
+                        $('#navbar-container').load('/Nav/Navbar.html', function () {
+                            resolve();
+                        });
+                    });
+                }
+
+                const isAdmin = await verificarPermisoAdmin();
+                if (!isAdmin) {
+                    toastError("No tiene permisos para acceder a esta página", "Acceso Denegado");
+                    setTimeout(() => {
+                        window.location.href = "/Inicio/Inicio.html";
+                    }, 2000);
+                    return;
+                }
+
+                console.log("Permisos de admin verificados, cargando datos...");
+
+                await cargarProveedores();
+
+                setupEventos();
+
+                console.log("Página inicializada correctamente");
+            }
+
+            async function verificarPermisoAdmin() {
+                try {
+                    const response = await $.ajax({
+                        url: "/api/Usuario/CheckAdminRole",
+                        type: "GET",
+                        dataType: "json"
+                    });
+                    return response === true;
+                } catch (error) {
+                    console.log('Error verificando rol admin:', error);
+                    return false;
+                }
+            }
+
+            async function cargarProveedores() {
+                try {
+                    console.log("Cargando proveedores...");
+                    proveedoresGlobal = await $.ajax({
+                        url: "/api/Libro/TraerProveedores",
+                        type: "GET",
+                        dataType: "json",
+                        timeout: 10000
+                    });
+
+                    console.log("Proveedores cargados exitosamente:", proveedoresGlobal);
+                    llenarTablaProveedores(proveedoresGlobal);
+                } catch (error) {
+                    console.error("Error cargando proveedores:", error);
+                    if (error.status === 403) {
+                        toastError("No tiene permisos para acceder a esta funcionalidad", "Sin permisos");
+                        setTimeout(() => {
+                            window.location.href = "/Inicio/Inicio.html";
+                        }, 2000);
+                    } else {
+                        toastError("Error al cargar los proveedores. Intente nuevamente.", "Error de carga");
+                    }
+                }
+            }
+
+            function llenarTablaProveedores(proveedores) {
+                const tbody = $('#dgvProveedores tbody');
+                tbody.empty();
+
+                proveedores.forEach(proveedor => {
+                    const estadoBadge = proveedor.activo
+                        ? '<span class="badge bg-success"><i class="bi bi-check-circle"></i> Activo</span>'
+                        : '<span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactivo</span>';
+
+                    const row = `
+                <tr class="provider-row">
+                    <td style="display:none;">${proveedor.id}</td>
+                    <td><strong>${proveedor.nombre}</strong></td>
+                    <td>${proveedor.contacto || ''}</td>
+                    <td>${proveedor.telefono || ''}</td>
+                    <td>${proveedor.email || ''}</td>
+                    <td>${estadoBadge}</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${proveedor.id}" title="Editar proveedor">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </td>
+                </tr>
+            `;
+                    tbody.append(row);
+                });
+            }
+
+            function editarProveedor(id) {
+                $("#rbtMod").prop('checked', true).trigger('change');
+                proveedorActual = proveedoresGlobal.find(p => p.id === id);
+                if (proveedorActual) {
+                    llenarFormulario(proveedorActual);
+                    $('#dgvProveedores tbody tr').removeClass('table-active');
+                    $('#dgvProveedores tbody tr').each(function () {
+                        if (parseInt($(this).find('td:eq(0)').text()) === id) {
+                            $(this).addClass('table-active');
+                        }
+                    });
+                    toastInfo(`Proveedor "${proveedorActual.nombre}" listo para modificar`, "Modo Edición");
+                }
+            }
+
+            function llenarFormulario(proveedor) {
+                $('#txtNombre').val(proveedor.nombre || '');
+                $('#txtContacto').val(proveedor.contacto || '');
+                $('#txtTelefono').val(proveedor.telefono || '');
+                $('#txtEmail').val(proveedor.email || '');
+                $('#txtDireccion').val(proveedor.direccion || '');
+                $('#txtObservaciones').val(proveedor.observaciones || '');
+                $('#chkActivo').prop('checked', proveedor.activo);
+            }
+
+            function limpiarFormulario() {
+                $('#txtNombre').val('');
+                $('#txtContacto').val('');
+                $('#txtTelefono').val('');
+                $('#txtEmail').val('');
+                $('#txtDireccion').val('');
+                $('#txtObservaciones').val('');
+                $('#chkActivo').prop('checked', true);
+                $('#cboBuscadorProveedor').val('');
+                $('#dgvProveedores tbody tr').removeClass('table-active');
+                proveedorActual = null;
+            }
+
+            function setupEventos() {
+                $('input[name="mode"]').change(function () {
+                    const modoSeleccionado = $(this).val();
+                    if (modoSeleccionado === 'add') {
+                        $('#divBuscadorProveedor').hide();
+                        $('#infoModificacion').hide();
+                        limpiarFormulario();
+                        $('#txtNombre').focus();
+                    } else {
+                        $('#divBuscadorProveedor').show();
+                        $('#infoModificacion').show();
+                        limpiarFormulario();
+                        $('#cboBuscadorProveedor').focus();
+                    }
+                });
+
+                $('#btnGuardar').click(async function () {
+                    await guardarProveedor();
+                });
+
+                $('#btnLimpiar').click(function () {
+                    limpiarFormulario();
+                });
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////INICIO PARTE DE COMBOS////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                $("#cboBuscadorProveedor").on("input", async function () {
+                    const searchText = $(this).val();
+                    if (searchText.length >= 3 || searchText === "") {
+                        await buscarProveedoresPorNombre(searchText);
+                    }
+                });
+
+                $("#cboBuscadorProveedor").on("change", function () {
+                    const selectedText = $(this).val();
+                    const selectedOption = $("#proveedorList option").filter(function () {
+                        return $(this).val() === selectedText;
+                    }).first();
+
+                    if (selectedOption.length > 0) {
+                        const proveedorId = selectedOption.data("id");
+                        editarProveedor(proveedorId);
+                    }
+                });
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                ////////////////////////////////////////FIN PARTE DE COMBOS////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                $('#dgvProveedores').on('click', '.provider-row', function () {
+                    const id = parseInt($(this).find('td:eq(0)').text());
+                    editarProveedor(id);
+                });
+
+                $('#dgvProveedores').on('click', '.btn-edit', function (e) {
+                    e.stopPropagation();
+                    const id = parseInt($(this).data('id'));
+                    editarProveedor(id);
+                });
+
+                $('input, select, textarea').on('keydown', function (e) {
+                    if (e.keyCode === 13) {
+                        e.preventDefault();
+                        const inputs = $('input:visible, select:visible, textarea:visible, button:visible').not(':disabled');
+                        const idx = inputs.index(this);
+                        if (idx < inputs.length - 1) {
+                            inputs[idx + 1].focus();
+                        } else {
+                            $("#btnGuardar").click();
+                        }
+                    }
+                });
+            }
+
+            async function buscarProveedoresPorNombre(nombre) {
+                try {
+                    if (nombre === "") {
+                        $('#proveedorList').empty();
+                        return;
+                    }
+
+                    const proveedoresFiltrados = proveedoresGlobal.filter(p =>
+                        p.nombre.toLowerCase().includes(nombre.toLowerCase())
+                    );
+
+                    $('#proveedorList').empty();
+                    proveedoresFiltrados.forEach(proveedor => {
+                        $('#proveedorList').append(`<option value="${proveedor.nombre}" data-id="${proveedor.id}">${proveedor.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error buscando proveedores:", error);
+                    $('#proveedorList').empty();
+                }
+            }
+
+            async function guardarProveedor() {
+                const modoSeleccionado = $('input[name="mode"]:checked').val();
+
+                const nombre = $('#txtNombre').val().trim();
+                if (!nombre) {
+                    toastTopDerecha("El nombre del proveedor es obligatorio", "Campo requerido");
+                    $('#txtNombre').focus();
+                    return;
+                }
+
+                const proveedor = {
+                    nombre: nombre,
+                    contacto: $('#txtContacto').val().trim(),
+                    telefono: $('#txtTelefono').val().trim(),
+                    email: $('#txtEmail').val().trim(),
+                    direccion: $('#txtDireccion').val().trim(),
+                    observaciones: $('#txtObservaciones').val().trim(),
+                    activo: $('#chkActivo').is(':checked')
+                };
+
+                if (proveedor.email && !validarEmail(proveedor.email)) {
+                    toastTopDerecha("El formato del email no es válido", "Email inválido");
+                    $('#txtEmail').focus();
+                    return;
+                }
+
+                try {
+                    let response;
+                    if (modoSeleccionado === 'add') {
+                        response = await $.ajax({
+                            url: "/api/Libro/AgregarProveedor",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(proveedor),
+                            dataType: "json"
+                        });
+                        toastExito(`Proveedor "${proveedor.nombre}" agregado exitosamente`, "Proveedor Agregado");
+                    } else {
+                        if (!proveedorActual) {
+                            toastTopDerecha("Debe seleccionar un proveedor para modificar", "Sin selección");
+                            return;
+                        }
+                        proveedor.id = proveedorActual.id;
+                        response = await $.ajax({
+                            url: "/api/Libro/ModificarProveedor",
+                            type: "PUT",
+                            contentType: "application/json",
+                            data: JSON.stringify(proveedor),
+                            dataType: "json"
+                        });
+                        toastExito(`Proveedor "${proveedor.nombre}" modificado exitosamente`, "Proveedor Modificado");
+                    }
+
+                    await cargarProveedores();
+                    limpiarFormulario();
+
+                } catch (error) {
+                    console.error("Error guardando proveedor:", error);
+                    if (error.responseJSON && error.responseJSON.message) {
+                        toastError(error.responseJSON.message, "Error al guardar");
+                    } else {
+                        toastError("Error al guardar el proveedor. Intente nuevamente.", "Error");
+                    }
+                }
+            }
+
+            function validarEmail(email) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
+            }
+        });
+    </script>
+</body>
+</html>

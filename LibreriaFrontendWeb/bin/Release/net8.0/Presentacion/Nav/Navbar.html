@@ -1,0 +1,143 @@
+﻿<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+<link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" href="/Inicio/Inicio.html">
+            <i class="bi bi-book-half me-1"></i> Sistema de Libros
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+                aria-controls="navbarContent" aria-expanded="false" aria-label="Alternar navegación">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="librosDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="bi bi-journal-bookmark me-1"></i> Libros
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="librosDropdown">
+                        <li><a class="dropdown-item" href="/Libros/Actualizacion/ActualizacionLibros.html">📘 Actualización</a></li>
+                        <li><a class="dropdown-item" href="/Libros/Consulta/ConsultaLibros.html">🔍 Consulta de libros</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="reservasDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="bi bi-journal-check me-1"></i> Reservas
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="reservasDropdown">
+                        <li><a class="dropdown-item" href="/Reservas/Reserva/Reservas.html">📝 Reserva de Libros</a></li>
+                        <li><a class="dropdown-item" href="/Reservas/Pedido/Pedido.html">📦 Pedido a Editoriales</a></li>
+                        <li><a class="dropdown-item" href="/Reservas/Baja/BajaReserva.html">❌ Baja de Reserva</a></li>
+                        <li><a class="dropdown-item" href="/Reservas/Verificar/VerificarReservas.html">🔎 Verificar Estado de Reservas</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="entregasDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="bi bi-box-seam me-1"></i> Entregas
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="entregasDropdown">
+                        <li><a class="dropdown-item" href="/Entregas/Asignar/Asignar.html">📚 Asignar Libros Reservados</a></li>
+                        <li><a class="dropdown-item" href="/Entregas/Entregar/Entregas.html">📤 Entregar Libro/s a Cliente</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="estadisticaDropdown" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="bi bi-bar-chart-line me-1"></i> Estadística
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="estadisticaDropdown">
+                        <li><a class="dropdown-item" href="/Estadistica/Estadisticas.html">📊 Estadísticas Generales</a></li>
+                    </ul>
+                </li>
+
+                <li class="nav-item dropdown" id="mantenimientoDropdown" style="display: none;">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        <i class="bi bi-gear me-1"></i> Mantenimiento
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/Mantenimiento/Usuarios/ModificacionUsuarios.html">👤 Usuarios</a></li>
+                        <li><a class="dropdown-item" href="/Mantenimiento/MetodosPago/MetodosPago.html">💳 Métodos de Pago</a></li>
+                        <li><a class="dropdown-item" href="/Mantenimiento/Proveedores/Proveedores.html">🚚 Proveedores</a></li>
+                    </ul>
+                </li>
+
+            </ul>
+            <div class="d-flex align-items-center">
+                <button id="themeToggle" class="btn btn-outline-light me-3" type="button" title="Cambiar tema">
+                    <i class="bi bi-moon-fill"></i>
+                </button>
+
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="logoutLink">
+                            <i class="bi bi-box-arrow-right me-1"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+<script src="/Comun/js/tema.js"></script>
+
+<script>
+
+    async function checkNavbarAdminAccess() {
+        try {
+            const response = await $.ajax({
+                url: "/api/Usuario/CheckAdminRole",
+                type: "GET",
+                dataType: "json"
+            });
+
+            if (response === true) {
+                $('#mantenimientoDropdown').show();
+            }
+        } catch (error) {
+            console.log('Error verificando rol admin para navbar:', error);
+        }
+    }
+
+    $(document).ready(function () {
+        $("#logoutLink").click(async function (e) {
+            e.preventDefault();
+
+            const result = await Swal.fire({
+                title: '¿Cerrar sesión?',
+                text: "¿Está seguro que desea cerrar sesión?",
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#0d6efd',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Sí, cerrar sesión',
+                cancelButtonText: 'Cancelar'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await $.ajax({
+                        url: "/api/Usuario/Logout",
+                        type: "GET"
+                    });
+
+                    window.location.href = "/Login/Login.html";
+                } catch (error) {
+                    console.error('Error al cerrar sesión:', error);
+                }
+            }
+        });
+
+
+        setTimeout(checkNavbarAdminAccess, 500);
+    });
+</script>

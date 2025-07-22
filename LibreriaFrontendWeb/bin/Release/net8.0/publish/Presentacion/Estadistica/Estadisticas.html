@@ -1,0 +1,688 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .radio-group {
+            margin-bottom: 15px;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+            .stats-card .card-body {
+                padding: 2rem;
+            }
+
+        .stats-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .stats-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .filter-card {
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+            .filter-card .card-header {
+                background-color: #f8f9fa;
+                border-bottom: 2px solid #e9ecef;
+                font-weight: bold;
+            }
+
+        .chart-container {
+            min-height: 400px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-12">
+                <h1 class="mb-4">
+                    <i class="bi bi-bar-chart-line me-2"></i>
+                    Estadísticas del Sistema
+                </h1>
+            </div>
+        </div>
+
+        <!-- Filtros principales -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card filter-card">
+                    <div class="card-header">
+                        <i class="bi bi-funnel me-2"></i>
+                        Filtros de Estadísticas
+                    </div>
+                    <div class="card-body">
+                        <!-- Radio buttons para elegir tipo -->
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Tipo de Estadística:</label>
+                                <div class="radio-group">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipoEstadistica" id="rbPedidos" value="pedidos" checked>
+                                        <label class="form-check-label" for="rbPedidos">
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            Pedidos a Distribuidores
+                                        </label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="tipoEstadistica" id="rbReservas" value="reservas">
+                                        <label class="form-check-label" for="rbReservas">
+                                            <i class="bi bi-journal-check me-1"></i>
+                                            Reservas de Clientes
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtros específicos para Pedidos -->
+                        <div id="filtrosPedidos" class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cboDistribuidor">Distribuidor:</label>
+                                    <input type="text" class="form-control" id="cboDistribuidor" list="distribuidorList" placeholder="Seleccione o ingrese distribuidor">
+                                    <datalist id="distribuidorList"></datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fechaInicioPedidos">Fecha Inicio:</label>
+                                    <input type="date" class="form-control" id="fechaInicioPedidos">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fechaFinPedidos">Fecha Fin:</label>
+                                    <input type="date" class="form-control" id="fechaFinPedidos">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Filtros específicos para Reservas -->
+                        <div id="filtrosReservas" class="row" style="display: none;">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="cboMetodoPago">Método de Pago:</label>
+                                    <input type="text" class="form-control" id="cboMetodoPago" list="metodoPagoList" placeholder="Seleccione o ingrese método de pago">
+                                    <datalist id="metodoPagoList"></datalist>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fechaInicioReservas">Fecha Inicio:</label>
+                                    <input type="date" class="form-control" id="fechaInicioReservas">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="fechaFinReservas">Fecha Fin:</label>
+                                    <input type="date" class="form-control" id="fechaFinReservas">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Botones de acción -->
+                        <div class="row mt-3">
+                            <div class="col-12">
+                                <button type="button" id="btnGenerarEstadisticas" class="btn btn-primary me-2">
+                                    <i class="bi bi-bar-chart me-1"></i>
+                                    Generar Estadísticas
+                                </button>
+                                <button type="button" id="btnLimpiarFiltros" class="btn btn-secondary">
+                                    <i class="bi bi-eraser me-1"></i>
+                                    Limpiar Filtros
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tarjetas de estadísticas principales -->
+        <div id="estadisticasGenerales" class="row" style="display: none;">
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <div class="stats-number" id="totalRegistros">0</div>
+                        <div class="stats-label" id="labelTotalRegistros">Total</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <div class="stats-number" id="montoTotal">$0</div>
+                        <div class="stats-label">Monto Total</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <div class="stats-number" id="promedio">$0</div>
+                        <div class="stats-label">Promedio</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card stats-card">
+                    <div class="card-body text-center">
+                        <div class="stats-number" id="ultimoMes">0</div>
+                        <div class="stats-label">Último Mes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráficos y tablas detalladas -->
+        <div id="detallesEstadisticas" class="row" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-table me-2"></i>
+                            <span id="tituloDetalle">Detalle de Registros</span>
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead id="tablaHeader">
+                                    <!-- Headers dinámicos según el tipo -->
+                                </thead>
+                                <tbody id="tablaBody">
+                                    <!-- Datos dinámicos -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gráfico de tendencias -->
+        <div id="graficoTendencias" class="row mt-4" style="display: none;">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-graph-up me-2"></i>
+                            Tendencias por Período
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-container">
+                            <canvas id="chartTendencias"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+            if (!isLoggedIn) return;
+
+            // Variables globales
+            let distribuidoresGlobal = [];
+            let metodosPagoGlobal = [];
+            let datosEstadisticas = [];
+            let chartInstance = null;
+
+            // Inicialización
+            await inicializarPagina();
+
+            async function inicializarPagina() {
+                console.log("Inicializando página de estadísticas...");
+
+                // Cargo los combos iniciales
+                await cargarDistribuidores();
+                await cargarMetodosPago();
+
+                // Setup de eventos
+                configurarEventos();
+
+                // Set fechas por defecto (último mes)
+                establecerFechasPorDefecto();
+            }
+
+            function configurarEventos() {
+                // Acá manejo el cambio entre tipos de estadística
+                $('input[name="tipoEstadistica"]').on('change', function () {
+                    const tipo = $(this).val();
+                    cambiarTipoEstadistica(tipo);
+                });
+
+                // Botón para generar estadísticas
+                $('#btnGenerarEstadisticas').on('click', async function () {
+                    await generarEstadisticas();
+                });
+
+                // Botón para limpiar filtros
+                $('#btnLimpiarFiltros').on('click', function () {
+                    limpiarFiltros();
+                });
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                //////////////////////////////////////INICIO PARTE DE COMBOS////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+                // Eventos para combo de distribuidor
+                $("#cboDistribuidor").on("input", async function () {
+                    const searchText = $(this).val();
+                    if (searchText.length >= 2 || searchText === "") {
+                        await buscarDistribuidores(searchText);
+                    }
+                });
+
+                // Eventos para combo de método de pago
+                $("#cboMetodoPago").on("input", async function () {
+                    const searchText = $(this).val();
+                    if (searchText.length >= 2 || searchText === "") {
+                        await buscarMetodosPago(searchText);
+                    }
+                });
+
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+                ///////////////////////////////////FIN PARTE DE COMBOS//////////////////////////////////////////////
+                //////////////////////////////////////////////////////////////////////////////////////////////////////
+            }
+
+            function cambiarTipoEstadistica(tipo) {
+                if (tipo === 'pedidos') {
+                    $('#filtrosPedidos').show();
+                    $('#filtrosReservas').hide();
+                } else {
+                    $('#filtrosPedidos').hide();
+                    $('#filtrosReservas').show();
+                }
+
+                // Limpiar estadísticas anteriores
+                ocultarEstadisticas();
+            }
+
+            function establecerFechasPorDefecto() {
+                const hoy = new Date();
+                const haceUnMes = new Date();
+                haceUnMes.setMonth(hoy.getMonth() - 1);
+
+                const fechaHoy = hoy.toISOString().split('T')[0];
+                const fechaHaceUnMes = haceUnMes.toISOString().split('T')[0];
+
+                // Seteo fechas para pedidos
+                $('#fechaInicioPedidos').val(fechaHaceUnMes);
+                $('#fechaFinPedidos').val(fechaHoy);
+
+                // Seteo fechas para reservas
+                $('#fechaInicioReservas').val(fechaHaceUnMes);
+                $('#fechaFinReservas').val(fechaHoy);
+            }
+
+            async function cargarDistribuidores() {
+                try {
+                    distribuidoresGlobal = await $.ajax({
+                        url: "/api/Estadisticas/TraerDistribuidores",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#distribuidorList').empty();
+                    distribuidoresGlobal.forEach(dist => {
+                        $('#distribuidorList').append(`<option value="${dist.nombre}" data-id="${dist.id}">${dist.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error cargando distribuidores:", error);
+                    toastError("Error al cargar distribuidores", "Error");
+                }
+            }
+
+            async function cargarMetodosPago() {
+                try {
+                    metodosPagoGlobal = await $.ajax({
+                        url: "/api/Estadisticas/TraerMetodosPago",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#metodoPagoList').empty();
+                    metodosPagoGlobal.forEach(metodo => {
+                        $('#metodoPagoList').append(`<option value="${metodo.nombre}" data-id="${metodo.id}">${metodo.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error cargando métodos de pago:", error);
+                    toastError("Error al cargar métodos de pago", "Error");
+                }
+            }
+
+            async function buscarDistribuidores(texto) {
+                $('#distribuidorList').empty();
+                if (texto === "") {
+                    distribuidoresGlobal.forEach(dist => {
+                        $('#distribuidorList').append(`<option value="${dist.nombre}" data-id="${dist.id}">${dist.nombre}</option>`);
+                    });
+                } else {
+                    const filtrados = distribuidoresGlobal.filter(dist =>
+                        dist.nombre.toLowerCase().includes(texto.toLowerCase())
+                    );
+                    filtrados.forEach(dist => {
+                        $('#distribuidorList').append(`<option value="${dist.nombre}" data-id="${dist.id}">${dist.nombre}</option>`);
+                    });
+                }
+            }
+
+            async function buscarMetodosPago(texto) {
+                $('#metodoPagoList').empty();
+                if (texto === "") {
+                    metodosPagoGlobal.forEach(metodo => {
+                        $('#metodoPagoList').append(`<option value="${metodo.nombre}" data-id="${metodo.id}">${metodo.nombre}</option>`);
+                    });
+                } else {
+                    const filtrados = metodosPagoGlobal.filter(metodo =>
+                        metodo.nombre.toLowerCase().includes(texto.toLowerCase())
+                    );
+                    filtrados.forEach(metodo => {
+                        $('#metodoPagoList').append(`<option value="${metodo.nombre}" data-id="${metodo.id}">${metodo.nombre}</option>`);
+                    });
+                }
+            }
+
+            async function generarEstadisticas() {
+                try {
+                    const tipo = $('input[name="tipoEstadistica"]:checked').val();
+
+                    // Acá construyo los parámetros según el tipo
+                    let parametros = {
+                        tipo: tipo
+                    };
+
+                    if (tipo === 'pedidos') {
+                        // Obtengo el ID del distribuidor seleccionado
+                        const distribuidorTexto = $('#cboDistribuidor').val();
+                        const distribuidorSeleccionado = $("#distribuidorList option").filter(function () {
+                            return $(this).val() === distribuidorTexto;
+                        }).first();
+
+                        parametros.distribuidorId = distribuidorSeleccionado.length > 0 ? distribuidorSeleccionado.data("id") : null;
+                        parametros.fechaInicio = $('#fechaInicioPedidos').val();
+                        parametros.fechaFin = $('#fechaFinPedidos').val();
+                    } else {
+                        // Para reservas
+                        const metodoPagoTexto = $('#cboMetodoPago').val();
+                        const metodoPagoSeleccionado = $("#metodoPagoList option").filter(function () {
+                            return $(this).val() === metodoPagoTexto;
+                        }).first();
+
+                        parametros.metodoPagoId = metodoPagoSeleccionado.length > 0 ? metodoPagoSeleccionado.data("id") : null;
+                        parametros.fechaInicio = $('#fechaInicioReservas').val();
+                        parametros.fechaFin = $('#fechaFinReservas').val();
+                    }
+
+                    // Llamo a la API para obtener estadísticas
+                    datosEstadisticas = await $.ajax({
+                        url: "/api/Estadisticas/ObtenerEstadisticas",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(parametros),
+                        dataType: "json"
+                    });
+
+                    // Muestro las estadísticas
+                    mostrarEstadisticas(datosEstadisticas, tipo);
+
+                    toastExito("Estadísticas generadas correctamente", "Éxito");
+
+                } catch (error) {
+                    console.error("Error generando estadísticas:", error);
+                    toastError("Error al generar estadísticas", "Error");
+                }
+            }
+
+            function mostrarEstadisticas(datos, tipo) {
+                // Acá muestro las tarjetas principales
+                $('#totalRegistros').text(datos.totalRegistros || 0);
+                $('#montoTotal').text(formatearMoneda(datos.montoTotal || 0));
+                $('#promedio').text(formatearMoneda(datos.promedio || 0));
+                $('#ultimoMes').text(datos.ultimoMes || 0);
+
+                // Cambio el label según el tipo
+                if (tipo === 'pedidos') {
+                    $('#labelTotalRegistros').text('Total Pedidos');
+                    $('#tituloDetalle').text('Detalle de Pedidos');
+                } else {
+                    $('#labelTotalRegistros').text('Total Reservas');
+                    $('#tituloDetalle').text('Detalle de Reservas');
+                }
+
+                // Muestro las secciones
+                $('#estadisticasGenerales').show();
+                $('#detallesEstadisticas').show();
+
+                // Cargo la tabla detallada
+                if (tipo === 'pedidos') {
+                    cargarTablaDetalle(datos.detallesPedidos, tipo);
+                } else {
+                    cargarTablaDetalle(datos.detallesReservas, tipo);
+                }
+
+                // Cargo el gráfico si hay datos de tendencias
+                if (datos.tendencias && datos.tendencias.length > 0) {
+                    cargarGraficoTendencias(datos.tendencias);
+                    $('#graficoTendencias').show();
+                }
+            }
+
+            function cargarTablaDetalle(detalles, tipo) {
+                const header = $('#tablaHeader');
+                const body = $('#tablaBody');
+
+                header.empty();
+                body.empty();
+
+                if (tipo === 'pedidos') {
+                    // Headers para pedidos
+                    header.html(`
+                            <tr>
+                                <th>ID</th>
+                                <th>Distribuidor</th>
+                                <th>Fecha</th>
+                                <th>Total Libros</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                            </tr>
+                        `);
+
+                    // Datos para pedidos
+                    detalles.forEach(pedido => {
+                        body.append(`
+                                <tr>
+                                    <td>${pedido.id}</td>
+                                    <td>${pedido.distribuidor}</td>
+                                    <td>${formatearFecha(pedido.fecha)}</td>
+                                    <td>${pedido.totalLibros}</td>
+                                    <td>${formatearMoneda(pedido.monto)}</td>
+                                    <td><span class="badge bg-${pedido.estadoColor}">${pedido.estado}</span></td>
+                                </tr>
+                            `);
+                    });
+                } else {
+                    // Headers para reservas
+                    header.html(`
+                            <tr>
+                                <th>ID</th>
+                                <th>Cliente</th>
+                                <th>Método Pago</th>
+                                <th>Fecha</th>
+                                <th>Total Libros</th>
+                                <th>Monto</th>
+                                <th>Estado</th>
+                            </tr>
+                        `);
+
+                    // Datos para reservas
+                    detalles.forEach(reserva => {
+                        body.append(`
+                                <tr>
+                                    <td>${reserva.id}</td>
+                                    <td>${reserva.cliente}</td>
+                                    <td>${reserva.metodoPago}</td>
+                                    <td>${formatearFecha(reserva.fecha)}</td>
+                                    <td>${reserva.totalLibros}</td>
+                                    <td>${formatearMoneda(reserva.monto)}</td>
+                                    <td><span class="badge bg-${reserva.estadoColor}">${reserva.estado}</span></td>
+                                </tr>
+                            `);
+                    });
+                }
+            }
+
+            function cargarGraficoTendencias(tendencias) {
+                const ctx = document.getElementById('chartTendencias').getContext('2d');
+
+                // Destruyo el gráfico anterior si existe
+                if (chartInstance) {
+                    chartInstance.destroy();
+                }
+
+                chartInstance = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: tendencias.map(t => formatearFecha(t.fecha)),
+                        datasets: [{
+                            label: 'Cantidad',
+                            data: tendencias.map(t => t.cantidad),
+                            borderColor: 'rgb(75, 192, 192)',
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            tension: 0.1
+                        }, {
+                            label: 'Monto',
+                            data: tendencias.map(t => t.monto),
+                            borderColor: 'rgb(255, 99, 132)',
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            tension: 0.1,
+                            yAxisID: 'y1'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        interaction: {
+                            mode: 'index',
+                            intersect: false,
+                        },
+                        scales: {
+                            x: {
+                                display: true,
+                                title: {
+                                    display: true,
+                                    text: 'Fecha'
+                                }
+                            },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: {
+                                    display: true,
+                                    text: 'Cantidad'
+                                }
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: {
+                                    display: true,
+                                    text: 'Monto ($)'
+                                },
+                                grid: {
+                                    drawOnChartArea: false,
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            function limpiarFiltros() {
+                // Limpio los combos
+                $('#cboDistribuidor').val('');
+                $('#cboMetodoPago').val('');
+
+                // Reseteo las fechas
+                establecerFechasPorDefecto();
+
+                // Oculto las estadísticas
+                ocultarEstadisticas();
+
+                toastInfo("Filtros limpiados", "Info");
+            }
+
+            function ocultarEstadisticas() {
+                $('#estadisticasGenerales').hide();
+                $('#detallesEstadisticas').hide();
+                $('#graficoTendencias').hide();
+
+                // Destruyo el gráfico si existe
+                if (chartInstance) {
+                    chartInstance.destroy();
+                    chartInstance = null;
+                }
+            }
+
+            // Funciones de utilidad para formateo
+            function formatearMoneda(monto) {
+                return new Intl.NumberFormat('es-AR', {
+                    style: 'currency',
+                    currency: 'ARS'
+                }).format(monto);
+            }
+
+            function formatearFecha(fecha) {
+                return new Date(fecha).toLocaleDateString('es-AR');
+            }
+        });
+    </script>
+</body>
+</html>

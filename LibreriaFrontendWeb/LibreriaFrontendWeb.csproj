@@ -1,0 +1,124 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Presentacion\Comun\css\temaOscuro.css" />
+    <None Remove="Presentacion\Comun\js\comun.js" />
+    <None Remove="Presentacion\Comun\js\tema.js" />
+    <None Remove="Presentacion\Entregas\Asignar\Asignar.html" />
+    <None Remove="Presentacion\Entregas\Entregar\Entregas.html" />
+    <None Remove="Presentacion\Estadistica\Estadisticas.html" />
+    <None Remove="Presentacion\Inicio\Inicio.html" />
+    <None Remove="Presentacion\Libros\Actualizacion\ActualizacionLibros.html" />
+    <None Remove="Presentacion\Libros\Consulta\ConsultaLibros.html" />
+    <None Remove="Presentacion\Login\Login.html" />
+    <None Remove="Presentacion\Mantenimiento\MetodosPago\MetodosPago.html" />
+    <None Remove="Presentacion\Mantenimiento\Proveedores\Proveedores.html" />
+    <None Remove="Presentacion\Mantenimiento\Usuarios\ModificacionUsuarios.html" />
+    <None Remove="Presentacion\Nav\Navbar.html" />
+    <None Remove="Presentacion\Reservas\Baja\BajaReserva.html" />
+    <None Remove="Presentacion\Reservas\Pedido\Pedido.html" />
+    <None Remove="Presentacion\Reservas\Reserva\Reservas.html" />
+    <None Remove="Presentacion\Reservas\Verificar\VerificarReservas.html" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Presentacion\Comun\css\temaOscuro.css">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Comun\js\comun.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Comun\js\tema.js">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Entregas\Asignar\Asignar.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Entregas\Entregar\Entregas.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Estadistica\Estadisticas.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Inicio\Inicio.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Libros\Actualizacion\ActualizacionLibros.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Libros\Consulta\ConsultaLibros.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Login\Login.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Mantenimiento\MetodosPago\MetodosPago.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Mantenimiento\Proveedores\Proveedores.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Mantenimiento\Usuarios\ModificacionUsuarios.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Nav\Navbar.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Reservas\Baja\BajaReserva.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Reservas\Pedido\Pedido.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Reservas\Reserva\Reservas.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Presentacion\Reservas\Verificar\VerificarReservas.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.2.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibreriaBack\LibreriaBack.csproj" />
+    <ProjectReference Include="..\LibreriaBack\LibreriaBack.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Controllers\ClienteController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\EstadisticasController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\LibroController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\MercadoPagoController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\PDFController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\PedidoController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\ReservaController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+    <Compile Update="Controllers\UsuarioController.cs">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Compile>
+  </ItemGroup>
+
+</Project>

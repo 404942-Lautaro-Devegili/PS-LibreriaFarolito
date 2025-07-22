@@ -1,0 +1,722 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\controllers\\estadisticascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\controllers\\estadisticascontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\controllers\\librocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\controllers\\librocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\helperdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\helperdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\nav\\navbar.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\nav\\navbar.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\controllers\\usuariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\controllers\\usuariocontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\login\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\login\\login.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\mantenimiento\\metodospago\\metodospago.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\mantenimiento\\metodospago\\metodospago.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\mantenimiento\\usuarios\\modificacionusuarios.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\mantenimiento\\usuarios\\modificacionusuarios.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\comun\\js\\comun.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\comun\\js\\comun.js||{14D17961-FE51-464D-9111-C4AF11D7D99A}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\inicio\\inicio.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\inicio\\inicio.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\presentacion\\mantenimiento\\proveedores\\proveedores.html||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\presentacion\\mantenimiento\\proveedores\\proveedores.html||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriafrontendweb\\hub\\progresshub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{16B23A97-EEDE-4F2E-AF1D-73FAEE655B7C}|LibreriaFrontendWeb\\LibreriaFrontendWeb.csproj|solutionrelative:libreriafrontendweb\\hub\\progresshub.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\1ca169b5f8096b3fd01bc738c77225099d363dea7bb508bd774b256157500bca\\Monitor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\eba96c61507b70cc04bb3a038cb03593bf8777fb489b23295dbae5521f27d1f5\\DataRow.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\libroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\libroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\ilibroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\ilibroservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\usuariodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\usuariodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\usuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\usuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\estadisticasdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\estadisticasdao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\iusuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\iusuarioservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\dtos\\estadisticasdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\dtos\\estadisticasdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\pedidodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\pedidodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\logistica\\proveedore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\logistica\\proveedore.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\autorizaci\u00F3n\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\autorizaci\u00F3n\\rol.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\autorizaci\u00F3n\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\autorizaci\u00F3n\\usuario.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\estadisticasservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\estadisticasservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\dtos\\registrarpagodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\dtos\\registrarpagodto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\logistica\\pago.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\logistica\\pago.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\pdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\pdfservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\clienteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\clienteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\iclienteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\iclienteservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\logistica\\formaspago.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\logistica\\formaspago.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\dtos\\formapagoactualizaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\dtos\\formapagoactualizaciondto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\librodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\librodao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\dtos\\logindto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\libros\\libro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\libros\\libro.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\properties\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\properties\\resources.resx||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\ireservaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\ireservaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\servicios\\implementacion\\reservaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\servicios\\implementacion\\reservaservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\clientedao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\implementacion\\reservadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\implementacion\\reservadao.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|d:\\escritoriovr0\\lauti\\universidad\\t\u00E9sis\\proyecto\\ps-libreriafarolito\\libreriaback\\datos\\entidades\\dtos\\librotodoslospreciosdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A44D7E12-AADA-4DBF-872A-78F8CF9F2B64}|LibreriaBack\\LibreriaBack.csproj|solutionrelative:libreriaback\\datos\\entidades\\dtos\\librotodoslospreciosdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 200,
+          "SelectedChildIndex": 4,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "LibroService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\LibroService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\LibroService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\LibroService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\LibroService.cs",
+              "ViewState": "AgIAAAwDAAAAAAAAAAAiwB8DAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T15:57:36.417Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ILibroService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\ILibroService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\ILibroService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\ILibroService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\ILibroService.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAwwB8AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T15:57:10.442Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "UsuarioDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\UsuarioDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\UsuarioDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\UsuarioDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\UsuarioDao.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAqwBMAAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:23:50.994Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
+              "Title": "UsuarioService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\UsuarioService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\UsuarioService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\UsuarioService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\UsuarioService.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:20:15.895Z",
+              "IsPinned": true
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "EstadisticasController.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\EstadisticasController.cs",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Controllers\\EstadisticasController.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\EstadisticasController.cs",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Controllers\\EstadisticasController.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAADwvxkAAAAxAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-22T18:36:49.202Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "HelperDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\HelperDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\HelperDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\HelperDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\HelperDao.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAkAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-22T18:36:10.556Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "Inicio.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Inicio\\Inicio.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Inicio\\Inicio.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Inicio\\Inicio.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Inicio\\Inicio.html",
+              "ViewState": "AgIAAGYAAAAAAAAAAAAAAHQAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-12T03:20:42.52Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "comun.js",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Comun\\js\\comun.js",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Comun\\js\\comun.js",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Comun\\js\\comun.js",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Comun\\js\\comun.js",
+              "ViewState": "AgIAABoAAAAAAAAAAAAkwDgAAAAlAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001646|",
+              "WhenOpened": "2025-06-12T02:07:31.633Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "ModificacionUsuarios.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Usuarios\\ModificacionUsuarios.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Usuarios\\ModificacionUsuarios.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Usuarios\\ModificacionUsuarios.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Usuarios\\ModificacionUsuarios.html",
+              "ViewState": "AgIAALMAAAAAAAAAAAAtwNQAAAAcAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-12T03:19:04.283Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "MetodosPago.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\MetodosPago\\MetodosPago.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\MetodosPago\\MetodosPago.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\MetodosPago\\MetodosPago.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\MetodosPago\\MetodosPago.html",
+              "ViewState": "AgIAAM0AAAAAAAAAAAAYwOYAAAA5AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-12T02:59:14.71Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UsuarioController.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\UsuarioController.cs",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Controllers\\UsuarioController.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\UsuarioController.cs",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Controllers\\UsuarioController.cs",
+              "ViewState": "AgIAAIwAAAAAAAAAAAAowJgAAABTAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T01:28:11.076Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "Login.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Login\\Login.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Login\\Login.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Login\\Login.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Login\\Login.html",
+              "ViewState": "AgIAAH0AAAAAAAAAAAAYwJYAAABXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-12T02:18:11.964Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "LibroController.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\LibroController.cs",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Controllers\\LibroController.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Controllers\\LibroController.cs",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Controllers\\LibroController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T01:19:24.718Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Navbar.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Nav\\Navbar.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Nav\\Navbar.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Nav\\Navbar.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Nav\\Navbar.html",
+              "ViewState": "AgIAACcAAAAAAAAAAAAtwDMAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-26T15:01:55.9Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Program.cs",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Program.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Program.cs",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Program.cs",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB0AAAAsAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T01:14:34.655Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "Proveedores.html",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Proveedores\\Proveedores.html",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Proveedores\\Proveedores.html",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Proveedores\\Proveedores.html",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Presentacion\\Mantenimiento\\Proveedores\\Proveedores.html",
+              "ViewState": "AgIAAKYAAAAAAAAAAAAtwL0AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001512|",
+              "WhenOpened": "2025-06-12T03:19:02.113Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\appsettings.json",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\appsettings.json",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\appsettings.json",
+              "RelativeToolTip": "LibreriaFrontendWeb\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-06-12T01:32:29.43Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ProgressHub.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Hub\\ProgressHub.cs",
+              "RelativeDocumentMoniker": "LibreriaFrontendWeb\\Hub\\ProgressHub.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaFrontendWeb\\Hub\\ProgressHub.cs",
+              "RelativeToolTip": "LibreriaFrontendWeb\\Hub\\ProgressHub.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-12T01:18:07.765Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 20,
+              "Title": "EstadisticasDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\EstadisticasDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\EstadisticasDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\EstadisticasDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\EstadisticasDao.cs",
+              "ViewState": "AgIAAJsAAAAAAAAAAAAiwKsAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:02:24.569Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 21,
+              "Title": "IUsuarioService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IUsuarioService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\IUsuarioService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IUsuarioService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\IUsuarioService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:19:56.508Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 22,
+              "Title": "EstadisticasDTO.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\EstadisticasDTO.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\DTOs\\EstadisticasDTO.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\EstadisticasDTO.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\DTOs\\EstadisticasDTO.cs",
+              "ViewState": "AgIAADQAAAAAAAAAAAAAAEMAAAAtAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:01:48.923Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 23,
+              "Title": "PedidoDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\PedidoDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\PedidoDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\PedidoDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\PedidoDao.cs",
+              "ViewState": "AgIAAEcAAAAAAAAAAADwvxUAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T05:47:13.932Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "Proveedore.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\Proveedore.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Logistica\\Proveedore.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\Proveedore.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Logistica\\Proveedore.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T05:46:37.915Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 25,
+              "Title": "Rol.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Rol.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Rol.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Rol.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Rol.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwBAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:22:06.844Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 26,
+              "Title": "Usuario.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Usuario.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Usuario.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Usuario.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Autorizaci\u00F3n\\Usuario.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:21:38.971Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 27,
+              "Title": "EstadisticasService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\EstadisticasService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\EstadisticasService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\EstadisticasService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\EstadisticasService.cs",
+              "ViewState": "AgIAAGkAAAAAAAAAAAAAAGkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T06:03:14.66Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 28,
+              "Title": "RegistrarPagoDTO.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\RegistrarPagoDTO.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\DTOs\\RegistrarPagoDTO.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\RegistrarPagoDTO.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\DTOs\\RegistrarPagoDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T01:56:50.842Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 29,
+              "Title": "Pago.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\Pago.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Logistica\\Pago.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\Pago.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Logistica\\Pago.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T01:56:26.748Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 30,
+              "Title": "PDFService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\PDFService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\PDFService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\PDFService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\PDFService.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T01:10:54.03Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 31,
+              "Title": "ClienteService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\ClienteService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\ClienteService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\ClienteService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\ClienteService.cs",
+              "ViewState": "AgIAAHAAAAAAAAAAAAAiwIoAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T00:17:57.51Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 32,
+              "Title": "IClienteService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IClienteService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\IClienteService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IClienteService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\IClienteService.cs",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAYwBIAAAAXAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T00:17:50.892Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 33,
+              "Title": "FormasPago.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\FormasPago.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Logistica\\FormasPago.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Logistica\\FormasPago.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Logistica\\FormasPago.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAqwAwAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T00:17:32.352Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 34,
+              "Title": "FormaPagoActualizacionDTO.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\FormaPagoActualizacionDTO.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\DTOs\\FormaPagoActualizacionDTO.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\FormaPagoActualizacionDTO.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\DTOs\\FormaPagoActualizacionDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-11T00:17:08.006Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "Monitor.cs",
+              "DocumentMoniker": "C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\1ca169b5f8096b3fd01bc738c77225099d363dea7bb508bd774b256157500bca\\Monitor.cs",
+              "ToolTip": "C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\1ca169b5f8096b3fd01bc738c77225099d363dea7bb508bd774b256157500bca\\Monitor.cs",
+              "ViewState": "AgIAAEUAAAAAAAAAAAASwFcAAAACAAAAAQAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-06-08T20:04:12.69Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 35,
+              "Title": "LibroDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\LibroDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\LibroDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\LibroDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\LibroDao.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-18T17:46:37.289Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 36,
+              "Title": "LoginDTO.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\LoginDTO.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\DTOs\\LoginDTO.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\LoginDTO.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\DTOs\\LoginDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-04T02:41:41.09Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 37,
+              "Title": "Libro.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Libros\\Libro.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\Libros\\Libro.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\Libros\\Libro.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\Libros\\Libro.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAqAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-05-03T15:56:48.407Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 38,
+              "Title": "Resources.resx",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Properties\\Resources.resx",
+              "RelativeDocumentMoniker": "LibreriaBack\\Properties\\Resources.resx",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Properties\\Resources.resx",
+              "RelativeToolTip": "LibreriaBack\\Properties\\Resources.resx",
+              "ViewState": "AgIAAGgAAAAAAAAAAADwv3UAAACKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001005|",
+              "WhenOpened": "2025-02-01T15:31:50.077Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 39,
+              "Title": "IReservaService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IReservaService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\IReservaService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\IReservaService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\IReservaService.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAgwA8AAABZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T14:59:35.725Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 40,
+              "Title": "ReservaService.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\ReservaService.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Servicios\\Implementacion\\ReservaService.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Servicios\\Implementacion\\ReservaService.cs",
+              "RelativeToolTip": "LibreriaBack\\Servicios\\Implementacion\\ReservaService.cs",
+              "ViewState": "AgIAADkAAAAAAAAAAAApwEUAAAAwAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T14:57:24.592Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 41,
+              "Title": "ClienteDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\ClienteDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\ClienteDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\ClienteDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\ClienteDao.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-02-01T14:56:21.438Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "DataRow.cs",
+              "DocumentMoniker": "C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\eba96c61507b70cc04bb3a038cb03593bf8777fb489b23295dbae5521f27d1f5\\DataRow.cs",
+              "ToolTip": "C:\\Users\\Krlitos\\AppData\\Local\\Temp\\.vsdbgsrc\\eba96c61507b70cc04bb3a038cb03593bf8777fb489b23295dbae5521f27d1f5\\DataRow.cs",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-12-23T03:05:19.056Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 42,
+              "Title": "ReservaDao.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\ReservaDao.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Implementacion\\ReservaDao.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Implementacion\\ReservaDao.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Implementacion\\ReservaDao.cs",
+              "ViewState": "AgIAAK4BAAAAAAAAAAAqwMkBAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-24T22:35:10.905Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 43,
+              "Title": "LibroTodosLosPreciosDTO.cs",
+              "DocumentMoniker": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\LibroTodosLosPreciosDTO.cs",
+              "RelativeDocumentMoniker": "LibreriaBack\\Datos\\Entidades\\DTOs\\LibroTodosLosPreciosDTO.cs",
+              "ToolTip": "D:\\Escritoriovr0\\Lauti\\Universidad\\T\u00E9sis\\Proyecto\\PS-LibreriaFarolito\\LibreriaBack\\Datos\\Entidades\\DTOs\\LibroTodosLosPreciosDTO.cs",
+              "RelativeToolTip": "LibreriaBack\\Datos\\Entidades\\DTOs\\LibroTodosLosPreciosDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-01-24T22:23:39.666Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

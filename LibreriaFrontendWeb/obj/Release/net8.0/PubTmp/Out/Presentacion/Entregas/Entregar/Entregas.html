@@ -1,0 +1,1401 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Entrega de Libros Asignados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <!-- SDK de MercadoPago -->
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-entregar {
+            font-size: 1.5rem;
+            padding: 10px 30px;
+        }
+
+        .book-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+        }
+
+        .payment-section {
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .payment-status {
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .payment-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .payment-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .payment-pending {
+            background: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeaa7;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Entrega de Libros Asignados</h1>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Buscar Libros Asignados para Entregar</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtTitulo">Título:</label>
+                            <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboSerie">Serie:</label>
+                            <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                            <datalist id="serieList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboAutor">Autor:</label>
+                            <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                            <datalist id="autorList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboEditorial">Editorial:</label>
+                            <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                            <datalist id="editorialList"></datalist>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboMateria">Materia:</label>
+                            <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                            <datalist id="materiaList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtCodigo">Código del Libro:</label>
+                            <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboCliente">Cliente:</label>
+                            <input type="text" class="form-control" id="cboCliente" list="clienteList" placeholder="Seleccione o ingrese cliente">
+                            <datalist id="clienteList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtReserva">ID de Reserva:</label>
+                            <input type="text" class="form-control" id="txtReserva" placeholder="Ingrese ID de reserva">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Libros Asignados para Entregar</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive book-grid">
+                    <table class="table table-striped" id="dgvLibros">
+                        <thead>
+                            <tr>
+                                <th>Entregar</th>
+                                <th>Cód. Reserva</th>
+                                <th style="display:none;">ID Cliente</th>
+                                <th>Cliente</th>
+                                <th style="display:none;">ID Libro</th>
+                                <th>Seña</th>
+                                <th>Saldo</th>
+                                <th>Código Libro</th>
+                                <th>Título</th>
+                                <th>Serie</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Materia</th>
+                                <th>Precio</th>
+                                <th>Precio Lista</th>
+                                <th>Contado</th>
+                                <th>Existencia</th>
+                                <th>Teléfono</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-end mb-4">
+            <button type="button" id="btnEntregar" class="btn btn-success btn-entregar" disabled>Entregar Libros</button>
+        </div>
+    </div>
+
+    <div class="modal fade" id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clientModalLabel">Datos del Cliente para Entrega</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="txtClienteCodigo">Código:</label>
+                        <input type="text" class="form-control" id="txtClienteCodigo" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtClienteNombre">Nombre:</label>
+                        <input type="text" class="form-control" id="txtClienteNombre" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTelefono">Teléfono:</label>
+                        <input type="text" class="form-control" id="txtTelefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDireccion">Dirección:</label>
+                        <input type="text" class="form-control" id="txtDireccion">
+                    </div>
+                    <div class="form-group">
+                        <label for="cboLocalidad">Localidad:</label>
+                        <select class="form-control" id="cboLocalidad"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtMail">Mail:</label>
+                        <input type="email" class="form-control" id="txtMail">
+                    </div>
+                    <div class="form-group">
+                        <label for="cboFormaPago">Forma de Pago:</label>
+                        <select class="form-control" id="cboFormaPago"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTotalReserva">Total Reserva:</label>
+                        <input type="text" class="form-control" id="txtTotalReserva" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtSenia">Seña:</label>
+                        <input type="text" class="form-control" id="txtSenia" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTotal">Total a Pagar:</label>
+                        <input type="text" class="form-control" id="txtTotal" readonly>
+                    </div>
+                </div>
+                <div class="payment-section" id="paymentSection" style="display: none;">
+                    <h6 class="mb-3"><i class="bi bi-credit-card"></i> Opciones de Pago</h6>
+
+                    <div id="paymentStatus" style="display: none;"></div>
+
+                    <div class="payment-buttons">
+                        <div class="payment-option">
+                            <button type="button" id="btnPagoEfectivo" class="btn btn-success w-100">
+                                <i class="bi bi-cash"></i> Pago en Efectivo
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="mercadopago-checkout" style="margin-top: 20px;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnConfirmarEntrega" class="btn btn-primary">Confirmar Entrega</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            window.addEventListener('message', function (event) {
+                if (event.data.type === 'payment_success') {
+                    paymentApproved = true;
+                    showPaymentStatus('Pago aprobado con MercadoPago', 'success');
+                    $('#btnConfirmarEntrega').prop('disabled', false);
+                    toastExito('Pago procesado exitosamente', 'Pago Aprobado');
+                }
+            });
+            if (!isLoggedIn) return;
+
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+            let clientesGlobal = [];
+            let localidadesGlobal = [];
+            let formasPagoGlobal = [];
+            let reservasAEntregar = [];
+            let clienteSeleccionado = null;
+            let combosCambiados = 0;
+
+            let searchInProgress = {
+                autor: false,
+                editorial: false,
+                materia: false,
+                serie: false,
+                cliente: false
+            };
+
+            let seleccionados = {
+                autor: { id: null, text: null },
+                editorial: { id: null, text: null },
+                materia: { id: null, text: null },
+                serie: { id: null, text: null },
+                cliente: { id: null, text: null }
+            };
+
+            let mp;
+            let checkout;
+            let currentPreferenceId = null;
+            let paymentApproved = false;
+
+            function initializeMercadoPago() {
+                // Acá uso la public key del VENDEDOR para crear las preferencias
+                mp = new MercadoPago('APP_USR-142d3aca-489c-41a3-b477-909c1eab62ff', {
+                    locale: 'es-AR'
+                });
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////INICIO DE PARTE DE COMBOS///////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            await cargarCombos(1);
+            await cargarClientes();
+            setearCombos();
+            await buscarLibrosAsignados();
+
+            $("#txtTitulo").blur(function () {
+                if ($(this).val()) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            $("#txtCodigo").blur(function () {
+                if ($(this).val()) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            $("#txtReserva").blur(function () {
+                buscarLibrosAsignados();
+            });
+
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.autor = true;
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    searchInProgress.autor = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboAutor").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.autor) {
+                    setTimeout(() => {
+                        $("#cboAutor").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#autorList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.autor = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                buscarLibrosAsignados();
+            });
+
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.editorial = true;
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    searchInProgress.editorial = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.editorial) {
+                    setTimeout(() => {
+                        $("#cboEditorial").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#editorialList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.editorial = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                buscarLibrosAsignados();
+            });
+
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.materia = true;
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    searchInProgress.materia = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.materia) {
+                    setTimeout(() => {
+                        $("#cboMateria").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#materiaList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.materia = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                buscarLibrosAsignados();
+            });
+
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.serie = true;
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    searchInProgress.serie = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.serie) {
+                    setTimeout(() => {
+                        $("#cboSerie").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#serieList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.serie = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                buscarLibrosAsignados();
+            });
+
+            $("#cboCliente").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                    return;
+                }
+
+                if (searchText.length >= 3) {
+                    try {
+                        const clientes = await $.ajax({
+                            url: `/api/Cliente/TraerClientesXNombre?nombre=${encodeURIComponent(searchText)}`,
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        $('#clienteList').empty();
+                        clientes.forEach(cliente => {
+                            $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                        });
+                    } catch (error) {
+                        console.error("Error buscando clientes:", error);
+                    }
+                }
+            });
+
+            $("#cboCliente").on("change", function () {
+                const selectedText = $(this).val();
+                const selectedOption = $("#clienteList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.cliente = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                }
+                buscarLibrosAsignados();
+            });
+
+            async function cargarCombos(opcion) {
+                if (opcion === 1) {
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            async function cargarClientes() {
+                try {
+                    clientesGlobal = await $.ajax({
+                        url: "/api/Cliente/TraerClientes",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#clienteList').empty();
+                    clientesGlobal.forEach(cliente => {
+                        $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error loading clients:", error);
+                    $('#clienteList').append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            function setearCombos() {
+                seleccionarPrimerElemento("#cboAutor", "#autorList", "autor");
+                seleccionarPrimerElemento("#cboEditorial", "#editorialList", "editorial");
+                seleccionarPrimerElemento("#cboMateria", "#materiaList", "materia");
+                seleccionarPrimerElemento("#cboSerie", "#serieList", "serie");
+            }
+
+            function seleccionarPrimerElemento(comboSelector, listSelector, tipo) {
+                const firstOption = $(listSelector + " option:first");
+                if (firstOption.length > 0) {
+                    $(comboSelector).val(firstOption.val());
+                    seleccionados[tipo] = {
+                        id: firstOption.data("id"),
+                        text: firstOption.val()
+                    };
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${encodeURIComponent(searchText)}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    console.error("Error buscando coincidentes:", error);
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////FIN DE PARTE DE COMBOS////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Acá pongo la validación para los campos numéricos
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            $("#txtCodigo").on("change", function () {
+                var codigo = $(this).val();
+                const validation = validarCodigo(codigo);
+                if (validation.isValid) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            setupNumericFieldValidation("#txtReserva", function (valor) {
+                return validarCampoNumerico(valor, "ID de reserva");
+            }, function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            $("#txtReserva").on("change", function () {
+                var reserva = $(this).val();
+                const validation = validarCampoNumerico(reserva, "ID de reserva");
+                if (validation.isValid) {
+                    buscarLibrosAsignados();
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Eventos de la grilla - para manejar los checkboxes
+            $('#dgvLibros').on('change', 'input.entregar-checkbox', function () {
+                const row = $(this).closest('tr');
+                const idReserva = parseInt(row.find('td:eq(1)').text());
+                const isChecked = $(this).prop('checked');
+
+                if (isChecked) {
+                    // Agrego a la lista si no está ya
+                    if (!reservasAEntregar.includes(idReserva)) {
+                        reservasAEntregar.push(idReserva);
+                    }
+                } else {
+                    // Saco de la lista
+                    const index = reservasAEntregar.indexOf(idReserva);
+                    if (index > -1) {
+                        reservasAEntregar.splice(index, 1);
+                    }
+                }
+
+                // Habilito/deshabilito el botón entregar
+                actualizarBotonEntregar();
+            });
+
+            // Eventos de botones
+            $('#btnLimpiar').click(function () {
+                limpiarBusqueda();
+                buscarLibrosAsignados();
+            });
+
+            $('#btnEntregar').click(async function () {
+                await mostrarModalEntrega();
+            });
+
+            $('#btnConfirmarEntrega').click(async function () {
+                await entregarReservas();
+            });
+
+            // Funciones principales
+            function actualizarBotonEntregar() {
+                $('#btnEntregar').prop('disabled', reservasAEntregar.length === 0);
+            }
+
+            function limpiarBusqueda() {
+                $('#txtTitulo').val('');
+                $('#txtCodigo').val('');
+                $('#txtReserva').val('');
+                $('#cboAutor').val('');
+                $('#cboEditorial').val('');
+                $('#cboMateria').val('');
+                $('#cboSerie').val('');
+                $('#cboCliente').val('');
+                $('#dgvLibros tbody').empty();
+
+                seleccionados = {
+                    autor: { id: null, text: null },
+                    editorial: { id: null, text: null },
+                    materia: { id: null, text: null },
+                    serie: { id: null, text: null },
+                    cliente: { id: null, text: null }
+                };
+
+                reservasAEntregar = [];
+                actualizarBotonEntregar();
+            }
+
+            async function buscarLibrosAsignados() {
+                try {
+                    const titulo = $('#txtTitulo').val() || null;
+                    const codigo = $('#txtCodigo').val() ? parseInt($('#txtCodigo').val()) : null;
+                    const idReserva = $('#txtReserva').val() ? parseInt($('#txtReserva').val()) : null;
+
+                    const idAutor = seleccionados.autor.id;
+                    const idSerie = seleccionados.serie.id;
+                    const idEditorial = seleccionados.editorial.id;
+                    const idMateria = seleccionados.materia.id;
+
+                    // Filtro "No tiene" (id = 1)
+                    const finalIdAutor = idAutor === 1 ? null : idAutor;
+                    const finalIdSerie = idSerie === 1 ? null : idSerie;
+                    const finalIdEditorial = idEditorial === 1 ? null : idEditorial;
+                    const finalIdMateria = idMateria === 1 ? null : idMateria;
+
+                    const idCliente = seleccionados.cliente.id ? seleccionados.cliente.id : null;
+
+                    const response = await $.ajax({
+                        url: "/api/Reserva/TraerLibrosAsignadosParaEntregar",
+                        type: "GET",
+                        data: {
+                            titulo: titulo,
+                            idSerie: finalIdSerie,
+                            idAutor: finalIdAutor,
+                            idEditorial: finalIdEditorial,
+                            idMateria: finalIdMateria,
+                            codigo: codigo,
+                            idCliente: idCliente,
+                            idReserva: idReserva
+                        },
+                        dataType: "json"
+                    });
+
+                    if (response && response.length > 0) {
+                        llenarTablaLibros(response);
+                    } else {
+                        $('#dgvLibros tbody').empty();
+                        toastInfo('No se encontraron libros asignados con los criterios especificados', 'Sin resultados');
+                    }
+                } catch (error) {
+                    console.error("Error buscando libros asignados:", error);
+                    toastError('Error al buscar libros asignados: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+
+            function llenarTablaLibros(libros) {
+                const tbody = $('#dgvLibros tbody');
+                tbody.empty();
+                reservasAEntregar = [];
+
+                libros.forEach(libro => {
+                    const row = `
+                                    <tr>
+                                        <td><input type="checkbox" class="form-check-input entregar-checkbox"></td>
+                                        <td>${libro.idReserva}</td>
+                                        <td style="display:none;">${libro.idCliente}</td>
+                                        <td>${libro.nomCliente}</td>
+                                        <td style="display:none;">${libro.idLibro}</td>
+                                        <td>${libro.senia ? parseFloat(libro.senia).toFixed(2) : '0.00'}</td>
+                                        <td>${libro.saldo ? parseFloat(libro.saldo).toFixed(2) : '0.00'}</td>
+                                        <td>${libro.codigo}</td>
+                                        <td>${libro.titulo}</td>
+                                        <td>${libro.serie || ''}</td>
+                                        <td>${libro.autor}</td>
+                                        <td>${libro.editorial || ''}</td>
+                                        <td>${libro.materia || ''}</td>
+                                        <td>${libro.precio ? parseFloat(libro.precio).toFixed(2) : ''}</td>
+                                        <td>${libro.precioLista ? parseFloat(libro.precioLista).toFixed(2) : ''}</td>
+                                        <td>${libro.contado ? parseFloat(libro.contado).toFixed(2) : ''}</td>
+                                        <td>${libro.existencia || 0}</td>
+                                        <td>${libro.telefono || '-'}</td>
+                                    </tr>
+                                `;
+                    tbody.append(row);
+                });
+
+                actualizarBotonEntregar();
+            }
+
+            async function mostrarModalEntrega() {
+                if (reservasAEntregar.length === 0) {
+                    toastTopDerecha('Debe seleccionar al menos una reserva para entregar', 'Sin selección');
+                    return;
+                }
+
+                try {
+                    const montosReservas = await $.ajax({
+                        url: "/api/Reserva/TraerMontosReservas?formaPago=1",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(reservasAEntregar)
+                    });
+
+                    if (montosReservas && montosReservas.length > 0) {
+                        const primeraReserva = montosReservas[0];
+                        const reservasCompletas = await $.ajax({
+                            url: "/api/Reserva/TraerReservasXId",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify([primeraReserva.idReserva])
+                        });
+
+                        if (reservasCompletas && reservasCompletas.length > 0) {
+                            const clienteId = reservasCompletas[0].idCliente;
+                            clienteSeleccionado = await $.ajax({
+                                url: `/api/Cliente/TraerClienteXId/${clienteId}`,
+                                type: "GET",
+                                dataType: "json"
+                            });
+
+                            // Cargo los datos del cliente en el modal
+                            await cargarDatosModal();
+                            llenarDatosCliente(clienteSeleccionado);
+                            calcularTotales(montosReservas);
+
+                            $('#clientModal').modal('show');
+                        }
+                    }
+                } catch (error) {
+                    console.error("Error preparando entrega:", error);
+                    toastError('Error al preparar la entrega: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+
+            async function cargarDatosModal() {
+                try {
+                    if (localidadesGlobal.length === 0) {
+                        localidadesGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerLocalidades",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboLocalidad').empty();
+                    localidadesGlobal.forEach(loc => {
+                        $('#cboLocalidad').append(`<option value="${loc.id}">${loc.localidad}</option>`);
+                    });
+
+                    if (formasPagoGlobal.length === 0) {
+                        formasPagoGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerFormasPago",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboFormaPago').empty();
+                    formasPagoGlobal.forEach(fp => {
+                        $('#cboFormaPago').append(`<option value="${fp.id}">${fp.formaPago}</option>`);
+                    });
+
+                } catch (error) {
+                    console.error("Error cargando datos del modal:", error);
+                }
+            }
+
+            function llenarDatosCliente(cliente) {
+                $('#txtClienteCodigo').val(cliente.codigo);
+                $('#txtClienteNombre').val(cliente.nombre);
+                $('#txtTelefono').val(cliente.telefono || '');
+                $('#txtDireccion').val(cliente.direccion || '');
+                $('#cboLocalidad').val(cliente.idLocalidad || '');
+                $('#txtMail').val(cliente.email || '');
+            }
+
+            async function calcularTotales(montosReservas) {
+                const totalReserva = montosReservas.reduce((sum, m) => sum + (m.precioLibro || 0), 0);
+                const totalSenia = montosReservas.reduce((sum, m) => sum + (m.senia || 0), 0);
+                const totalAPagar = montosReservas.reduce((sum, m) => sum + (m.saldo || 0), 0);
+
+                $('#txtTotalReserva').val(totalReserva.toFixed(2));
+                $('#txtSenia').val(totalSenia.toFixed(2));
+                $('#txtTotal').val(totalAPagar.toFixed(2));
+
+                if (totalAPagar > 0) {
+                    $('#paymentSection').show();
+
+                    const yaEstaPagado = await verificarPagoExistente(reservasAEntregar);
+
+                    if (!yaEstaPagado) {
+                        $('#btnConfirmarEntrega').prop('disabled', !paymentApproved);
+
+                        const clientEmail = 'test_user_1651065437@testuser.com';
+                        const description = `Pago de ${reservasAEntregar.length} libro(s) - Reservas: ${reservasAEntregar.join(', ')}`;
+                        initializeCheckout(totalAPagar, description, clientEmail);
+                    }
+                } else {
+                    $('#paymentSection').hide();
+                    $('#btnConfirmarEntrega').prop('disabled', false);
+                }
+            }
+
+            $('#btnPagoEfectivo').click(async function () {
+                const result = await Swal.fire({
+                    title: '¿Pago en efectivo?',
+                    text: `¿Confirma que recibió $${$('#txtTotal').val()} en efectivo?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, recibido',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    paymentApproved = true;
+
+                    try {
+                        await $.ajax({
+                            url: "/api/Reserva/RegistrarPago",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify({
+                                reservasIds: reservasAEntregar,
+                                amount: parseFloat($('#txtTotal').val()),
+                                method: 'efectivo',
+                                status: 'approved'
+                            })
+                        });
+                    } catch (error) {
+                        console.error("Error guardando pago en efectivo:", error);
+                    }
+
+                    showPaymentStatus('Pago en efectivo confirmado', 'success');
+                    $('#btnConfirmarEntrega').prop('disabled', false);
+                    toastExito('Pago en efectivo registrado', 'Pago Confirmado');
+                }
+            });
+
+            $('#cboFormaPago').change(async function () {
+                const formaPago = parseInt($(this).val());
+
+                try {
+                    const montosReservas = await $.ajax({
+                        url: `/api/Reserva/TraerMontosReservas?formaPago=${formaPago}`,
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(reservasAEntregar)
+                    });
+
+                    if (montosReservas && montosReservas.length > 0) {
+                        calcularTotales(montosReservas);
+                    }
+                } catch (error) {
+                    console.error("Error recalculando montos:", error);
+                }
+            });
+
+            async function entregarReservas() {
+                const totalAPagar = parseFloat($('#txtTotal').val()) || 0;
+
+                if (totalAPagar > 0 && !paymentApproved) {
+                    toastTopDerecha('Debe procesar el pago antes de entregar', 'Pago Pendiente');
+                    return;
+                }
+
+                const result = await Swal.fire({
+                    icon: 'question',
+                    title: '¿Está seguro?',
+                    text: `¿Desea entregar ${reservasAEntregar.length} reserva(s)?`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, entregar',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const cliente = {
+                            codigo: parseInt($('#txtClienteCodigo').val()),
+                            nombre: $('#txtClienteNombre').val(),
+                            telefono: $('#txtTelefono').val(),
+                            direccion: $('#txtDireccion').val(),
+                            idLocalidad: parseInt($('#cboLocalidad').val()) || 1,
+                            localidad: $('#cboLocalidad option:selected').text() || "No tiene",
+                            email: $('#txtMail').val()
+                        };
+
+                        const clienteResult = await $.ajax({
+                            url: "/api/Cliente/GuardarOModificarCliente",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(cliente)
+                        });
+
+                        if (clienteResult.length === 0 || clienteResult[0] === -1) {
+                            toastError('Error al actualizar los datos del cliente', 'Error');
+                            return;
+                        }
+
+                        // Ahora entrego las reservas
+                        const entregaData = {
+                            reservasIds: reservasAEntregar,
+                            paymentInfo: {
+                                amount: parseFloat($('#txtTotal').val()),
+                                method: paymentApproved ? (currentPreferenceId ? 'mercadopago' : 'efectivo') : 'none',
+                                preferenceId: currentPreferenceId,
+                                status: paymentApproved ? 'approved' : 'pending'
+                            }
+                        };
+
+                        const response = await $.ajax({
+                            url: "/api/Reserva/EntregarReservas",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(entregaData.reservasIds) 
+                        });
+
+                        const todosExitosos = Object.values(response).every(value => value === 1);
+
+                        if (todosExitosos) {
+                            toastExito(`${reservasAEntregar.length} reserva(s) entregada(s) exitosamente`, 'Entrega Completada');
+
+                            $('#clientModal').modal('hide');
+                            resetPaymentState();
+                            limpiarBusqueda();
+                            await buscarLibrosAsignados();
+                        } else {
+                            const reservasConError = Object.entries(response)
+                                .filter(([_, value]) => value !== 1)
+                                .map(([key, _]) => key);
+
+                            toastTopDerecha(`Algunas reservas no pudieron ser entregadas: ${reservasConError.join(', ')}`, 'Advertencia');
+                            await buscarLibrosAsignados();
+                        }
+                    } catch (error) {
+                        console.error("Error entregando reservas:", error);
+                        toastError('Error al entregar reservas: ' + (error.message || 'Error desconocido'), 'Error');
+                    }
+                }
+            }
+
+            // Navegación con Enter - para que sea más cómodo de usar
+            $('input, select').on('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $('input:visible, select:visible, button:visible').not(':disabled');
+                    const idx = inputs.index(this);
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Si es el último input, disparo la búsqueda
+                        buscarLibrosAsignados();
+                    }
+                }
+            });
+
+            // Función para crear preferencia de pago
+            async function createPaymentPreference(amount, description, clientEmail) {
+                try {
+                    const preference = {
+                        items: [{
+                            title: description,
+                            quantity: 1,
+                            currencyId: 'ARS',
+                            unitPrice: amount
+                        }],
+                        payer: {
+                            email: 'test_user_1651065437@testuser.com' // Email del comprador de TEST
+                        },
+                        backUrls: {
+                            success: window.location.href.split('?')[0], // Usa la URL actual sin parámetros
+                            failure: window.location.href.split('?')[0],
+                            pending: window.location.href.split('?')[0]
+                        },
+                        autoReturn: 'approved',
+                        externalReference: `reservas_${reservasAEntregar.join('_')}_${Date.now()}`,
+                        // Agregá esto para forzar modo TEST
+                        sandbox: true
+                    };
+
+                    console.log('Enviando preferencia:', JSON.stringify(preference, null, 2)); // Debug completo
+
+                    const response = await $.ajax({
+                        url: "/api/MercadoPago/CreatePreference",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(preference)
+                    });
+
+                    console.log('Respuesta completa del servidor:', response);
+                    return response.preferenceId;
+                } catch (error) {
+                    console.error("Error completo creando preferencia:", error);
+                    console.error("Response text:", error.responseText);
+                    throw error;
+                }
+            }
+
+            // Función para inicializar el checkout
+            async function initializeCheckout(amount, description, clientEmail) {
+                try {
+                    console.log('Inicializando checkout con:', { amount, description, clientEmail }); // Debug
+                    showPaymentStatus('Preparando pago...', 'pending');
+
+                    currentPreferenceId = await createPaymentPreference(amount, description, clientEmail);
+                    console.log('Preference ID creado:', currentPreferenceId); // Debug
+
+                    // Acá cambio el chequeo para que no tire error
+                    if (checkout && typeof checkout.unmount === 'function') {
+                        checkout.unmount();
+                    }
+
+                    // Crear el checkout con la preferencia real
+                    checkout = mp.checkout({
+                        preference: {
+                            id: currentPreferenceId
+                        },
+                        render: {
+                            container: '#mercadopago-checkout',
+                            label: 'Pagar con MercadoPago'
+                        }
+                    });
+
+                    $('#btnPagoEfectivo').prop('disabled', false);
+                    hidePaymentStatus();
+
+                } catch (error) {
+                    console.error("Error inicializando checkout:", error);
+                    showPaymentStatus('Error al preparar el pago', 'error');
+                    toastError('Error al preparar el pago con MercadoPago', 'Error');
+                }
+            }
+
+            // Funciones para mostrar estado del pago
+            function showPaymentStatus(message, type) {
+                const statusDiv = $('#paymentStatus');
+                statusDiv.removeClass('payment-success payment-error payment-pending');
+                statusDiv.addClass(`payment-${type}`);
+                statusDiv.html(`<i class="bi bi-${getStatusIcon(type)}"></i> ${message}`);
+                statusDiv.show();
+            }
+
+            function hidePaymentStatus() {
+                $('#paymentStatus').hide();
+            }
+
+            function getStatusIcon(type) {
+                switch (type) {
+                    case 'success': return 'check-circle';
+                    case 'error': return 'x-circle';
+                    case 'pending': return 'clock';
+                    default: return 'info-circle';
+                }
+            }
+
+            // Función para resetear el estado del pago
+            function resetPaymentState() {
+                paymentApproved = false;
+                currentPreferenceId = null;
+
+                // Acá limpio el checkout de MercadoPago para que no quede colgado
+                if (checkout && typeof checkout.unmount === 'function') {
+                    checkout.unmount();
+                    checkout = null;
+                }
+
+                // Limpio completamente el contenedor del checkout
+                $('#mercadopago-checkout').empty();
+
+                hidePaymentStatus();
+                $('#paymentSection').hide();
+
+                // Reseteo el botón de confirmar entrega también
+                $('#btnConfirmarEntrega').prop('disabled', true);
+            }
+
+            // Función para verificar si ya hay pago registrado para estas reservas
+            async function verificarPagoExistente(reservasIds) {
+                try {
+                    const response = await $.ajax({
+                        url: "/api/Reserva/VerificarPagoReservas",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(reservasIds)
+                    });
+
+                    if (response && response.pagado) {
+                        paymentApproved = true;
+                        showPaymentStatus('Pago ya registrado', 'success');
+                        $('#btnPagoEfectivo').prop('disabled', true);
+                        $('#btnConfirmarEntrega').prop('disabled', false);
+                        return true;
+                    }
+
+                    return false;
+                } catch (error) {
+                    console.error("Error verificando pago existente:", error);
+                    return false;
+                }
+            }
+
+            // Inicializo MercadoPago cuando carga la página
+            initializeMercadoPago();
+            // Acá manejo el retorno de MercadoPago cuando se completa el pago
+            async function handleMercadoPagoReturn() {
+                const urlParams = new URLSearchParams(window.location.search);
+                const collectionStatus = urlParams.get('collection_status');
+                const paymentId = urlParams.get('payment_id');
+                const externalReference = urlParams.get('external_reference');
+
+                if (collectionStatus && paymentId) {
+                    console.log('Retorno de MercadoPago:', { collectionStatus, paymentId, externalReference });
+
+                    switch (collectionStatus) {
+                        case 'approved':
+                            paymentApproved = true;
+                            showPaymentStatus('Pago aprobado con MercadoPago', 'success');
+                            $('#btnConfirmarEntrega').prop('disabled', false);
+                            toastExito('Pago procesado exitosamente', 'Pago Aprobado');
+                            break;
+                        case 'pending':
+                            showPaymentStatus('Pago pendiente de aprobación', 'pending');
+                            toastTopDerecha('El pago está pendiente de aprobación', 'Pago Pendiente');
+                            break;
+                        case 'rejected':
+                            showPaymentStatus('Pago rechazado', 'error');
+                            toastError('El pago fue rechazado', 'Pago Rechazado');
+                            break;
+                    }
+                    await registrarPago(collectionStatus, externalReference);
+
+                    // Limpio la URL para que no se vea feo
+                    const cleanUrl = window.location.href.split('?')[0];
+                    window.history.replaceState({}, document.title, cleanUrl);
+                }
+            }
+
+            async function registrarPago(paymentStatus, paymentExternalReference) {
+                var tipoDePago = "";
+                switch (paymentStatus) {
+                    case 'approved':
+                        tipoDePago = "aprobado"
+                        break;
+                    case 'pending':
+                        tipoDePago = "pendiente"
+                        break;
+                    case 'rejected':
+                        tipoDePago = "rechazado"
+                        break;
+                }
+                try {
+                    await $.ajax({
+                        url: "/api/Reserva/RegistrarPago",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            reservasIds: reservasAEntregar,
+                            amount: parseFloat($('#txtTotal').val()) || 0,
+                            method: 'mercadopago',
+                            preferenceId: currentPreferenceId,
+                            paymentId: paymentId,
+                            status: paymentStatus,
+                            externalReference: paymentExternalReference
+                        })
+                    });
+                    console.log($`Pago ${tipoDePago} de MercadoPago guardado en BD`);
+                } catch (error) {
+                    console.error($`Error guardando pago ${tipoDePago}:`, error);
+                }
+            }
+
+            // Llamo a esta función cuando carga la página
+            await handleMercadoPagoReturn();
+
+            // Event listener para cuando se cierra el modal
+            $('#clientModal').on('hidden.bs.modal', function () {
+                resetPaymentState();
+            });
+        });
+    </script>
+</body>
+</html>
+
+

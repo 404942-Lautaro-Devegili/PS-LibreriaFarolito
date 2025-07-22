@@ -1,0 +1,2442 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Gestión de Reservas</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-reservar {
+            font-size: 1.5rem;
+            padding: 10px 30px;
+        }
+
+        .book-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .total-info {
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .control-grid {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .seña-payment-section {
+            border-top: 1px solid #dee2e6;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .payment-option {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        #senia-mercadopago-button {
+            background: #009ee3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            width: 100%;
+        }
+
+            #senia-mercadopago-button:disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+        .payment-success {
+            color: #28a745;
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .payment-error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .payment-pending {
+            color: #856404;
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 8px 12px;
+            border-radius: 4px;
+        }
+
+        .payment-locked {
+            background-color: #f8f9fa !important;
+            border-color: #dee2e6 !important;
+            opacity: 0.6;
+            cursor: not-allowed !important;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Sistema de Gestión de Reservas</h1>
+
+        <!-- Search Books Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Buscar Libros</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtTitulo">Título:</label>
+                            <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboSerie">Serie:</label>
+                            <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                            <datalist id="serieList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboAutor">Autor:</label>
+                            <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                            <datalist id="autorList"></datalist>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboEditorial">Editorial:</label>
+                            <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                            <datalist id="editorialList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboMateria">Materia:</label>
+                            <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                            <datalist id="materiaList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtCodigo">Código:</label>
+                            <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="button" id="btnBuscar" class="btn btn-primary">Buscar</button>
+                        <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Results Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Libros Encontrados</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive book-grid">
+                    <table class="table table-striped" id="dgvLibros">
+                        <thead>
+                            <tr>
+                                <th>Reservar</th>
+                                <th>Cantidad</th>
+                                <th style="display:none;">ID</th>
+                                <th>Código</th>
+                                <th>Título</th>
+                                <th>Serie</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Materia</th>
+                                <th>Precio Lista</th>
+                                <th>Precio</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selected Books Control -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Libros Seleccionados para Reservar</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive control-grid">
+                    <table class="table table-striped" id="dgvControl">
+                        <thead>
+                            <tr>
+                                <th>Cantidad</th>
+                                <th style="display:none;">ID</th>
+                                <th>Código</th>
+                                <th>Título</th>
+                                <th>Contado</th>
+                                <th>Precio</th>
+                                <th>Subt. Cont.</th>
+                                <th>Subt. Créd.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+                <div id="lblTotal" class="total-info" style="display: none;">
+                    Totales: Contado: $0.00. Crédito: $0.00.
+                </div>
+            </div>
+        </div>
+
+        <!-- Reserve Button -->
+        <div class="text-end mb-4">
+            <button type="button" id="btnReservar" class="btn btn-success btn-reservar" disabled>Reservar</button>
+        </div>
+    </div>
+
+    <!-- Client Modal -->
+    <div class="modal fade" id="clientModal" tabindex="-1" aria-labelledby="clientModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="clientModalLabel">Datos del Cliente</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-check form-check-inline mb-3">
+                        <input class="form-check-input" type="radio" name="clientType" id="rbtNuevo">
+                        <label class="form-check-label" for="rbtNuevo">Nuevo</label>
+                    </div>
+                    <div class="form-check form-check-inline mb-3">
+                        <input class="form-check-input" type="radio" name="clientType" id="rbtRegistrado" checked>
+                        <label class="form-check-label" for="rbtRegistrado">Registrado</label>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="txtClienteCodigo">Código:</label>
+                        <input type="text" class="form-control" id="txtClienteCodigo">
+                    </div>
+                    <div class="form-group">
+                        <label for="cboClienteNombre">Nombre:</label>
+                        <input type="text" class="form-control" id="cboClienteNombre" list="clienteList">
+                        <datalist id="clienteList"></datalist>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTelefono">Teléfono:</label>
+                        <input type="text" class="form-control" id="txtTelefono">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtDireccion">Dirección:</label>
+                        <input type="text" class="form-control" id="txtDireccion">
+                    </div>
+                    <div class="form-group">
+                        <label for="cboLocalidad">Localidad:</label>
+                        <select class="form-control" id="cboLocalidad"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtMail">Mail:</label>
+                        <input type="email" class="form-control" id="txtMail">
+                    </div>
+                    <div class="form-group">
+                        <label for="cboFormaPago">Forma de Pago:</label>
+                        <select class="form-control" id="cboFormaPago"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="txtPorcentajeRecargo">Recargo Aplicado:</label>
+                        <input type="text" class="form-control" id="txtPorcentajeRecargo" readonly placeholder="0%">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtSenia">Seña:</label>
+                        <input type="text" class="form-control" id="txtSenia" placeholder="Ingrese seña">
+                    </div>
+                    <div class="form-group">
+                        <label for="txtTotal">Total:</label>
+                        <input type="text" class="form-control" id="txtTotal" readonly>
+                    </div>
+                    <!-- Sección de pago de seña -->
+                    <div class="seña-payment-section" id="seniaPaymentSection" style="display: none;">
+                        <h6 class="mb-3"><i class="bi bi-credit-card"></i> Pago de Seña</h6>
+
+                        <!-- Estado del pago de seña -->
+                        <div id="seniaPaymentStatus" style="display: none;"></div>
+
+                        <!-- Botones de pago para seña -->
+                        <div class="payment-buttons">
+                            <div class="payment-option">
+                                <button type="button" id="btnSeniaEfectivo" class="btn btn-success w-100">
+                                    <i class="bi bi-cash"></i> Seña en Efectivo
+                                </button>
+                            </div>
+                            <!--<div class="payment-option">
+                                <button type="button" id="senia-mercadopago-button" disabled>
+                                    Pagar Seña con MercadoPago
+                                </button>
+                            </div>-->
+                        </div>
+
+                        <!-- Contenedor para el checkout de MercadoPago de seña -->
+                        <div id="senia-mercadopago-checkout" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" id="btnLimpiarCliente" class="btn btn-warning">Limpiar</button>
+                    <button type="button" id="btnConfirmarReserva" class="btn btn-primary">Confirmar Reserva</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+
+            // Global variables
+            let clientesGlobal = [];
+            let localidadesGlobal = [];
+            let formasPagoGlobal = [];
+            let metodosPagoConPorcentajes = [];
+            let librosAReservar = new Map();
+            let totalContado = 0;
+            let totalCredito = 0;
+            let idFormaPago = 0;
+            let idCliente = 0;
+            // Variables para pago de seña - acá manejo todo lo relacionado al pago
+            let seniaPaymentApproved = false;
+            let seniaCurrentPreferenceId = null;
+            let seniaCheckout = null;
+            let seniaAmount = 0;
+            let mp;
+            let reservaPaymentApproved = false;
+            let reservaCurrentPreferenceId = null;
+            let reservaCheckout;
+            let selectedBooksGlobal = [];
+            let mercadoPagoState;
+
+
+            function initializeMercadoPago() {
+                // Acá uso la public key del VENDEDOR para crear las preferencias
+                mp = new MercadoPago('APP_USR-142d3aca-489c-41a3-b477-909c1eab62ff', {
+                    locale: 'es-AR'
+                });
+            }
+
+            // Acá manejo el retorno de MercadoPago cuando se completa el pago de la reserva
+            async function handleReservaMercadoPagoReturn() {
+                try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const collectionStatus = urlParams.get('collection_status');
+                    const paymentId = urlParams.get('payment_id');
+                    const externalReference = urlParams.get('external_reference');
+
+                    if (collectionStatus && paymentId && externalReference) {
+                        console.log('Procesando pago de MercadoPago para reserva:', { collectionStatus, paymentId, externalReference });
+
+                        // Acá restauro el estado desde memoria en lugar del external reference
+                        const estadoRestaurado = restaurarEstadoDeLocalStorage();
+                        if (!estadoRestaurado) {
+                            // Si no se pudo restaurar desde localStorage, usar el external reference como fallback
+                            await rearmarLibrosSeleccionados(externalReference);
+                        }
+
+                        switch (collectionStatus) {
+                            case 'approved':
+                                seniaPaymentApproved = true;
+                                await registrarPagoReserva(collectionStatus, externalReference, paymentId);
+                                toastExito('Pago de seña procesado exitosamente', 'Pago Aprobado');
+
+                                $('#clientModal').modal('show');
+                                mostrarEstadoPagoEnModal('Pago aprobado con MercadoPago', 'success');
+                                controlarUISegunEstadoPago();
+                                $('#seniaPaymentSection').hide();
+                                $('#btnConfirmarReserva').prop('disabled', false);
+                                break;
+
+                            case 'pending':
+                                toastTopDerecha('El pago de seña está pendiente de aprobación', 'Pago Pendiente');
+                                $('#clientModal').modal('show');
+                                mostrarEstadoPagoEnModal('Pago pendiente de aprobación', 'pending');
+                                break;
+
+                            case 'rejected':
+                                toastError('El pago de seña fue rechazado', 'Pago Rechazado');
+                                $('#clientModal').modal('show');
+                                mostrarEstadoPagoEnModal('Pago rechazado', 'error');
+                                break;
+                        }
+
+                        // Limpio la URL
+                        const cleanUrl = window.location.href.split('?')[0];
+                        window.history.replaceState({}, document.title, cleanUrl);
+                    }
+                } catch (error) {
+                    console.error("Error manejando retorno de MercadoPago:", error);
+                }
+            }
+
+            function guardarEstadoEnLocalStorage() {
+                const estado = {
+                    librosSeleccionados: selectedBooksGlobal,
+                    formaPago: parseInt($('#cboFormaPago').val()),
+                    tipoCliente: $('#rbtNuevo').is(':checked') ? 'nuevo' : 'registrado',
+                    clienteData: {
+                        codigo: $('#txtClienteCodigo').val(),
+                        nombre: $('#cboClienteNombre').val(),
+                        telefono: $('#txtTelefono').val(),
+                        direccion: $('#txtDireccion').val(),
+                        localidadId: $('#cboLocalidad').val(),
+                        mail: $('#txtMail').val()
+                    },
+                    montos: {
+                        totalContado: parseFloat($('#txtTotalContado').val()) || 0,
+                        totalCredito: parseFloat($('#txtTotalCredito').val()) || 0,
+                        senia: parseFloat($('#txtSenia').val()) || 0
+                    }
+                };
+
+                localStorage.setItem('mercadoPagoReservaState', JSON.stringify(estado));
+                console.log('Estado guardado en localStorage:', estado);
+            }
+
+            function restaurarEstadoDeLocalStorage() {
+                try {
+                    const estado = localStorage.getItem('mercadoPagoReservaState');
+                    if (estado) {
+                        const parsedState = JSON.parse(estado);
+                        console.log('Restaurando estado desde localStorage:', parsedState);
+
+                        // Restauro los libros seleccionados
+                        if (parsedState.librosSeleccionados && parsedState.librosSeleccionados.length > 0) {
+                            selectedBooksGlobal = [...parsedState.librosSeleccionados];
+                            actualizarTablaLibrosSeleccionados();
+                        }
+
+                        // Restauro forma de pago
+                        if (parsedState.formaPago) {
+                            $('#cboFormaPago').val(parsedState.formaPago);
+                            idFormaPago = parsedState.formaPago;
+                        }
+
+                        // Restauro tipo de cliente
+                        if (parsedState.tipoCliente) {
+                            if (parsedState.tipoCliente === 'nuevo') {
+                                $('#rbtNuevo').prop('checked', true);
+                            } else {
+                                $('#rbtRegistrado').prop('checked', true);
+                            }
+                        }
+
+                        // Restauro datos del cliente
+                        if (parsedState.clienteData) {
+                            const clientData = parsedState.clienteData;
+                            $('#txtClienteCodigo').val(clientData.codigo || '');
+                            $('#cboClienteNombre').val(clientData.nombre || '');
+                            $('#txtTelefono').val(clientData.telefono || '');
+                            $('#txtDireccion').val(clientData.direccion || '');
+                            $('#txtMail').val(clientData.mail || '');
+
+                            if (clientData.localidadId) {
+                                $('#cboLocalidad').val(clientData.localidadId);
+                            }
+                        }
+
+                        // Limpio el localStorage después de usar
+                        localStorage.removeItem('mercadoPagoReservaState');
+
+                        // Recalculo precios y actualizo UI
+                        actualizarBotones();
+                        calcularPrecios();
+
+                        return true;
+                    }
+                    return false;
+                } catch (error) {
+                    console.error("Error restaurando estado desde localStorage:", error);
+                    return false;
+                }
+            }
+
+            async function rearmarLibrosSeleccionados(externalReference) {
+                try {
+                    // Primero cargo los combos de localidades y formas de pago
+                    await cargarCombosModal();
+
+                    // Extraigo los datos del external_reference
+                    const parts = externalReference.split('_');
+                    const librosData = [];
+                    let formaPagoId = null;
+                    let tipoCliente = null;
+                    let clientDataEncoded = null;
+
+                    // Acá busco todos los datos guardados
+                    for (let i = 2; i < parts.length - 1; i++) { // Saco 'reserva', 'senia' y timestamp
+                        if (parts[i].startsWith('fp')) {
+                            formaPagoId = parts[i].substring(2);
+                        } else if (parts[i].startsWith('tc')) {
+                            tipoCliente = parts[i].substring(2);
+                        } else if (parts[i].startsWith('cd')) {
+                            clientDataEncoded = parts[i].substring(2);
+                        } else {
+                            librosData.push(parts[i]);
+                        }
+                    }
+
+                    // Rearmo la lista global de libros
+                    selectedBooksGlobal = [];
+                    for (let i = 0; i < librosData.length; i += 2) {
+                        const idLibro = parseInt(librosData[i]);
+                        const cantidad = parseInt(librosData[i + 1]);
+                        selectedBooksGlobal.push({ id: idLibro, cantidad: cantidad });
+                    }
+
+                    // Marco los checkboxes y cantidades en la grilla
+                    $('#dgvLibros tbody tr').each(function () {
+                        const row = $(this);
+                        const idLibro = parseInt(row.find('td:eq(2)').text());
+                        const libroSeleccionado = selectedBooksGlobal.find(l => l.id === idLibro);
+
+                        if (libroSeleccionado) {
+                            row.find('input[type="checkbox"]').prop('checked', true);
+                            row.find('input[type="number"]').val(libroSeleccionado.cantidad);
+                            actualizarReserva(row, idLibro, libroSeleccionado.cantidad);
+                        }
+                    });
+
+                    // Acá selecciono la forma de pago que estaba seleccionada
+                    if (formaPagoId) {
+                        $('#cboFormaPago').val(formaPagoId);
+                        idFormaPago = parseInt(formaPagoId);
+                        $('#cboFormaPago').trigger('change');
+                    }
+
+                    // Acá restauro el tipo de cliente y los datos
+                    if (tipoCliente && clientDataEncoded) {
+                        try {
+                            const clientData = JSON.parse(atob(clientDataEncoded));
+
+                            if (tipoCliente === 'nuevo') {
+                                // Marco Nuevo y cargo todos los datos del formulario
+                                $('#rbtNuevo').prop('checked', true);
+                                $('#rbtRegistrado').prop('checked', false);
+
+                                // Habilito los campos para cliente nuevo
+                                $('#txtClienteCodigo').prop('disabled', true);
+                                $('#cboClienteNombre').prop('disabled', false);
+                                $('#txtTelefono').prop('disabled', false);
+                                $('#txtDireccion').prop('disabled', false);
+                                $('#cboLocalidad').prop('disabled', false);
+                                $('#txtMail').prop('disabled', false);
+
+                                // Cargo todos los datos que había ingresado
+                                $('#txtClienteCodigo').val(clientData.codigo);
+                                $('#cboClienteNombre').val(clientData.nombre);
+                                $('#txtTelefono').val(clientData.telefono);
+                                $('#txtDireccion').val(clientData.direccion);
+                                $('#cboLocalidad').val(clientData.localidad);
+                                $('#txtMail').val(clientData.mail);
+
+                            } else if (tipoCliente === 'registrado' && clientData.codigo) {
+                                // Marco Registrado y busco el cliente por código
+                                $('#rbtRegistrado').prop('checked', true);
+                                $('#rbtNuevo').prop('checked', false);
+
+                                // Habilito los campos para cliente registrado
+                                $('#txtClienteCodigo').prop('disabled', false);
+                                $('#cboClienteNombre').prop('disabled', false);
+                                $('#txtTelefono').prop('disabled', false);
+                                $('#txtDireccion').prop('disabled', false);
+                                $('#cboLocalidad').prop('disabled', false);
+                                $('#txtMail').prop('disabled', false);
+
+                                // Busco el cliente por código para cargar sus datos completos
+                                await buscarClientePorCodigo(clientData.codigo);
+                            }
+
+                        } catch (decodeError) {
+                            console.error("Error decodificando datos del cliente:", decodeError);
+                            // Si falla la decodificación, al menos marco el tipo correcto
+                            if (tipoCliente === 'nuevo') {
+                                $('#rbtNuevo').prop('checked', true);
+                            } else {
+                                $('#rbtRegistrado').prop('checked', true);
+                            }
+                        }
+                    }
+
+                    actualizarBotones();
+                    calcularPrecios();
+
+                } catch (error) {
+                    console.error("Error rearmando libros seleccionados:", error);
+                }
+            }
+
+            async function llenarDatosModalDesdePago(externalReference) {
+                try {
+                    // Acá parseo el external reference para sacar los datos
+                    const parts = externalReference.split('_');
+                    const formaPagoIndex = parts.findIndex(p => p.startsWith('fp'));
+                    const tipoClienteIndex = parts.findIndex(p => p.startsWith('tc'));
+                    const clientDataIndex = parts.findIndex(p => p.startsWith('cd'));
+
+                    if (formaPagoIndex !== -1) {
+                        const fpValue = parts[formaPagoIndex].replace('fp', '');
+                        $('#cboFormaPago').val(fpValue);
+                        idFormaPago = parseInt(fpValue);
+                    }
+
+                    if (tipoClienteIndex !== -1) {
+                        const tcValue = parts[tipoClienteIndex].replace('tc', '');
+                        if (tcValue === 'nuevo') {
+                            $('#rbtNuevo').prop('checked', true);
+                        } else {
+                            $('#rbtRegistrado').prop('checked', true);
+                        }
+                    }
+
+                    if (clientDataIndex !== -1) {
+                        const clientDataEncoded = parts[clientDataIndex].replace('cd', '');
+                        try {
+                            const clientData = JSON.parse(decodeURIComponent(clientDataEncoded));
+
+                            // Acá verifico si es cliente registrado para buscar los datos completos
+                            if (tipoCliente === 'registrado' && clientData.codigo) {
+                                const cliente = await buscarClientePorCodigoDos(clientData.codigo);
+                                if (cliente && cliente.length > 0) {
+                                    const clienteData = cliente[0];
+
+                                    // Primero cargo las localidades si no están cargadas
+                                    if (localidadesGlobal.length === 0) {
+                                        await cargarLocalidades();
+                                    }
+
+                                    // Acá lleno el combo con el cliente encontrado
+                                    $('#cboClienteNombre').empty();
+                                    const option = $('<option></option>').attr('value', clienteData.nombre).text(clienteData.nombre);
+                                    $('#cboClienteNombre').append(option);
+                                    $('#cboClienteNombre').val(clienteData.nombre);
+
+                                    // Lleno todos los campos con la data completa del cliente
+                                    $('#txtClienteCodigo').val(clienteData.id || clienteData.codigo || '');
+                                    $('#txtTelefono').val(clienteData.telefono || '');
+                                    $('#txtDireccion').val(clienteData.direccion || '');
+                                    $('#txtMail').val(clienteData.email || '');
+
+                                    if (clienteData.idLocalidad) {
+                                        $('#cboLocalidad').val(clienteData.idLocalidad);
+                                    }
+
+                                    // Marco el cliente como cargado globalmente
+                                    clienteSeleccionado = clienteData;
+                                }
+                            } else {
+                                // Para cliente nuevo uso los datos del external reference
+                                $('#txtClienteCodigo').val(clientData.codigo || '');
+                                $('#cboClienteNombre').val(clientData.nombre || '');
+                                $('#txtTelefono').val(clientData.telefono || '');
+                                $('#txtDireccion').val(clientData.direccion || '');
+                                $('#txtMail').val(clientData.mail || '');
+
+                                if (clientData.localidadId) {
+                                    $('#cboLocalidad').val(clientData.localidadId);
+                                }
+                            }
+                        } catch (decodeError) {
+                            console.error("Error decodificando datos del cliente:", decodeError);
+                            toastError('Error al cargar los datos del cliente', 'Error');
+                        }
+                    }
+
+                    // Recalculo los precios con la forma de pago seleccionada
+                    calcularPrecios();
+
+                } catch (error) {
+                    console.error("Error llenando datos del modal desde pago:", error);
+                }
+            }
+
+            async function buscarClientePorCodigoDos(codigo) {
+                try {
+                    const response = await $.ajax({
+                        url: "/api/Cliente/BuscarClientePorCodigo",
+                        type: "GET",
+                        data: { codigo: codigo }
+                    });
+                    return response;
+                } catch (error) {
+                    console.error("Error buscando cliente por código:", error);
+                    return null;
+                }
+            }
+
+            async function cargarLocalidades() {
+                try {
+                    localidadesGlobal = await $.ajax({
+                        url: "/api/Cliente/TraerLocalidades",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    // Cargo el combo de localidades
+                    $('#cboLocalidad').empty();
+                    $('#cboLocalidad').append('<option value="">Seleccionar localidad</option>');
+                    localidadesGlobal.forEach(function (localidad) {
+                        $('#cboLocalidad').append($('<option></option>').attr('value', localidad.id).text(localidad.localidad));
+                    });
+                } catch (error) {
+                    console.error("Error cargando localidades:", error);
+                }
+            }
+
+            async function registrarPagoReserva(paymentStatus, paymentExternalReference, paymentId) {
+                var tipoDePago = "";
+                switch (paymentStatus) {
+                    case 'approved':
+                        tipoDePago = "aprobado"
+                        break;
+                    case 'pending':
+                        tipoDePago = "pendiente"
+                        break;
+                    case 'rejected':
+                        tipoDePago = "rechazado"
+                        break;
+                }
+                try {
+                    await $.ajax({
+                        url: "/api/Reserva/RegistrarPago",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
+                            reservasIds: [], // Para seña no tengo reservas creadas todavía
+                            amount: parseFloat($('#txtSenia').val()) || 0,
+                            method: 'mercadopago',
+                            preferenceId: reservaCurrentPreferenceId,
+                            paymentId: paymentId,
+                            status: paymentStatus,
+                            externalReference: paymentExternalReference
+                        })
+                    });
+                    console.log(`Pago ${tipoDePago} de seña guardado en BD`);
+                } catch (error) {
+                    console.error(`Error guardando pago ${tipoDePago} de seña:`, error);
+                }
+            }
+
+            function mostrarEstadoPagoEnModal(message, type) {
+                const statusDiv = $('#seniaPaymentStatus');
+                statusDiv.removeClass('payment-success payment-error payment-pending');
+                statusDiv.addClass(`payment-${type}`);
+                statusDiv.html(`<i class="bi bi-${getStatusIcon(type)}"></i> ${message}`);
+                statusDiv.show();
+            }
+
+            function getStatusIcon(type) {
+                switch (type) {
+                    case 'success': return 'check-circle';
+                    case 'error': return 'x-circle';
+                    case 'pending': return 'clock';
+                    default: return 'info-circle';
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////INICIO DE PARTE DE COMBOS///////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+
+            let searchInProgress = {
+                autor: false,
+                editorial: false,
+                materia: false,
+                serie: false
+            };
+
+            // Diccionarios para almacenar las selecciones
+            let seleccionados = {
+                autor: { id: null, text: null },
+                editorial: { id: null, text: null },
+                materia: { id: null, text: null },
+                serie: { id: null, text: null }
+            };
+
+            $('#txtSenia').on('blur', function () {
+                // Si el pago ya está aprobado, no permitir cambios
+                if (seniaPaymentApproved) {
+                    return; // Salgo sin hacer nada
+                }
+
+                const originalValue = $(this).val();
+                const validation = validarPrecio(originalValue, "seña");
+
+                if (validation.cleanValue !== originalValue) {
+                    $(this).val(validation.cleanValue);
+                }
+
+                const seniaValue = parseFloat(validation.cleanValue) || 0;
+                const seniaMinimaCalculada = calcularSeniaMinima(idFormaPago);
+
+                // Validar que la seña no sea menor a la mínima calculada
+                if (seniaValue > 0 && seniaValue < seniaMinimaCalculada) {
+                    const porcentajeSeniaMinima = obtenerSeniaMinima(idFormaPago);
+                    const porcentajeRecargo = obtenerPorcentajeRecargo(idFormaPago);
+                    toastError(`La seña mínima es $${seniaMinimaCalculada.toFixed(2)} (${porcentajeSeniaMinima}% del total con recargo)`, 'Seña Insuficiente');
+                    $(this).val(seniaMinimaCalculada.toFixed(2));
+                    seniaAmount = seniaMinimaCalculada;
+                } else {
+                    seniaAmount = seniaValue;
+                }
+
+                // Acá reseteo y vuelvo a inicializar el checkout cada vez que cambia la seña
+                if (seniaAmount > 0) {
+                    resetearPagoSenia(); // Limpio el checkout anterior
+                    $('#seniaPaymentSection').show();
+                    inicializarPagoSenia(); // Creo un nuevo checkout con el nuevo monto
+                } else {
+                    $('#seniaPaymentSection').hide();
+                    resetearPagoSenia();
+                }
+            });
+
+            await cargarCombos(1);
+            await cargarMetodosPagoConPorcentajes();
+            setearCombos();
+            await traerLibrosXTituloAutorEditorialYOCodigo();
+
+            // Eventos de campos de búsqueda
+            $("#txtTitulo").blur(async function () {
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            $("#txtCodigo").blur(async function () {
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.autor = true;
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    searchInProgress.autor = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboAutor").on("change", async function () {
+                const selectedText = $(this).val();
+
+                // Si hay una búsqueda en progreso, esperamos un momento
+                if (searchInProgress.autor) {
+                    setTimeout(() => {
+                        $("#cboAutor").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#autorList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.autor = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para editorial
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.editorial = true;
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    searchInProgress.editorial = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.editorial) {
+                    setTimeout(() => {
+                        $("#cboEditorial").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#editorialList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.editorial = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para materia
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.materia = true;
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    searchInProgress.materia = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.materia) {
+                    setTimeout(() => {
+                        $("#cboMateria").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#materiaList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.materia = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Eventos de combos para serie
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.serie = true;
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    searchInProgress.serie = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("change", async function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.serie) {
+                    setTimeout(() => {
+                        $("#cboSerie").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#serieList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.serie = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            // Functions
+            async function cargarCombos(opcion) {
+                // Opción 1: Usar listas globales, Opción 2: Traer de la base
+                if (opcion === 1) {
+                    // Cargar autores
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    // Cargar editoriales
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    // Cargar materias
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    // Cargar series
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                } else {
+                    // Recargar todo desde la base
+                    try {
+                        const autores = await $.ajax({
+                            url: "/api/Libro/TraerAutores",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const editoriales = await $.ajax({
+                            url: "/api/Libro/TraerEditoriales",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const materias = await $.ajax({
+                            url: "/api/Libro/TraerMaterias",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        const series = await $.ajax({
+                            url: "/api/Libro/TraerSeries",
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        autoresGlobal = autores;
+                        editorialesGlobal = editoriales;
+                        materiasGlobal = materias;
+                        seriesGlobal = series;
+
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    } catch (error) {
+                        console.error("Error cargando datos:", error);
+                        $("#autorList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#editorialList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#materiaList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                        $("#serieList").empty().append('<option value="Sin datos.">Sin datos.</option>');
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            async function cargarMetodosPagoConPorcentajes() {
+                try {
+                    // Aca cargamos los metodos de pago con sus porcentajes configurados
+                    const response = await $.ajax({
+                        url: "/api/Cliente/TraerFormasPago",
+                        type: "GET"
+                    });
+
+                    if (response && response.length > 0) {
+                        metodosPagoConPorcentajes = response;
+                        console.log("Metodos de pago con porcentajes cargados:", metodosPagoConPorcentajes);
+                    } else {
+                        console.warn("No se pudieron cargar los metodos de pago con porcentajes");
+                        // Fallback: usar porcentajes por defecto
+                        metodosPagoConPorcentajes = [
+                            { id: 1, formaPago: 'Efectivo', porcentajeRecargo: 0 },
+                            { id: 2, formaPago: 'Debito', porcentajeRecargo: 0 },
+                            { id: 3, formaPago: 'Credito', porcentajeRecargo: 15 },
+                            { id: 4, formaPago: 'Transferencia', porcentajeRecargo: 0 }
+                        ];
+                    }
+                } catch (error) {
+                    console.error("Error cargando metodos de pago con porcentajes:", error);
+                    // Fallback: usar porcentajes por defecto
+                    metodosPagoConPorcentajes = [
+                        { id: 1, formaPago: 'Efectivo', porcentajeRecargo: 0 },
+                        { id: 2, formaPago: 'Debito', porcentajeRecargo: 0 },
+                        { id: 3, formaPago: 'Credito', porcentajeRecargo: 15 },
+                        { id: 4, formaPago: 'Transferencia', porcentajeRecargo: 0 }
+                    ];
+                }
+            }
+
+            function calcularPrecioConPorcentaje(precioBase, idFormaPago) {
+                // Aca obtenemos el porcentaje configurado para este metodo de pago
+                const porcentajeRecargo = obtenerPorcentajeRecargo(idFormaPago);
+                return precioBase + (precioBase * porcentajeRecargo / 100);
+            }
+
+            function obtenerPorcentajeRecargo(idFormaPago) {
+                // Aca buscamos el porcentaje de recargo para el metodo de pago seleccionado
+                const metodoPago = metodosPagoConPorcentajes.find(m => m.id === idFormaPago);
+                return metodoPago ? (metodoPago.porcentajeRecargo || 0) : 0;
+            }
+
+            function obtenerSeniaMinima(idFormaPago) {
+                // Acá busco el porcentaje de seña mínima para el método de pago seleccionado
+                const metodoPago = metodosPagoConPorcentajes.find(mp => mp.id === idFormaPago);
+                return metodoPago ? metodoPago.seniaMinima : 0;
+            }
+
+            function calcularSeniaMinima(idFormaPago) {
+                // Acá calculo la seña mínima basada en el total ya calculado CON recargo
+                const porcentajeSeniaMinima = obtenerSeniaMinima(idFormaPago);
+
+                // Si hay libros seleccionados, calculo el total dinámicamente
+                let totalConRecargo = 0;
+
+                if (librosAReservar.size > 0) {
+                    librosAReservar.forEach(libro => {
+                        switch (idFormaPago) {
+                            case 1: // Efectivo
+                                totalConRecargo += libro.subtotalContado;
+                                break;
+                            case 2: // Débito  
+                                totalConRecargo += libro.subtotalDebito;
+                                break;
+                            case 3: // Crédito
+                                totalConRecargo += libro.subtotalCredito;
+                                break;
+                            case 4: // Transferencia
+                                totalConRecargo += libro.subtotalTransferencia;
+                                break;
+                            default:
+                                totalConRecargo += libro.subtotalContado;
+                        }
+                    });
+                } else {
+                    // Fallback a las variables globales si no hay libros
+                    switch (idFormaPago) {
+                        case 1: // Efectivo
+                            totalConRecargo = totalContado;
+                            break;
+                        case 2: // Débito  
+                            totalConRecargo = totalContado;
+                            break;
+                        case 3: // Crédito
+                            totalConRecargo = totalCredito;
+                            break;
+                        case 4: // Transferencia
+                            totalConRecargo = totalContado;
+                            break;
+                        default:
+                            totalConRecargo = totalContado;
+                    }
+                }
+
+                return totalConRecargo * porcentajeSeniaMinima / 100;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            function setearCombos() {
+                // Establecer "No tiene" como valor inicial para todos los combos
+                seleccionarPrimerElemento("#cboAutor", "#autorList", "autor");
+                seleccionarPrimerElemento("#cboEditorial", "#editorialList", "editorial");
+                seleccionarPrimerElemento("#cboMateria", "#materiaList", "materia");
+                seleccionarPrimerElemento("#cboSerie", "#serieList", "serie");
+            }
+
+            function seleccionarPrimerElemento(comboSelector, listSelector, tipo) {
+                const firstOption = $(listSelector + " option:first");
+                if (firstOption.length > 0) {
+                    $(comboSelector).val(firstOption.val());
+                    seleccionados[tipo] = {
+                        id: firstOption.data("id"),
+                        text: firstOption.val()
+                    };
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${encodeURIComponent(searchText)}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    console.error("Error buscando coincidentes:", error);
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            async function traerLibrosXTituloAutorEditorialYOCodigo() {
+                try {
+                    const titulo = $("#txtTitulo").val() || null;
+                    const codigo = $("#txtCodigo").val() ? parseInt($("#txtCodigo").val()) : null;
+
+                    // Obtener IDs de las selecciones guardadas
+                    const idAutor = seleccionados.autor.id;
+                    const idSerie = seleccionados.serie.id;
+                    const idEditorial = seleccionados.editorial.id;
+                    const idMateria = seleccionados.materia.id;
+
+                    // Filtrar "No tiene" (id = 1)
+                    const finalIdAutor = idAutor === 1 ? null : idAutor;
+                    const finalIdSerie = idSerie === 1 ? null : idSerie;
+                    const finalIdEditorial = idEditorial === 1 ? null : idEditorial;
+                    const finalIdMateria = idMateria === 1 ? null : idMateria;
+
+                    const libros = await $.ajax({
+                        url: "/api/Libro/BuscarLibros",
+                        type: "GET",
+                        data: {
+                            titulo: titulo,
+                            idSerie: finalIdSerie,
+                            idAutor: finalIdAutor,
+                            idEditorial: finalIdEditorial,
+                            idMateria: finalIdMateria,
+                            codigo: codigo
+                        },
+                        dataType: "json"
+                    });
+
+                    if (libros && libros.length > 0) {
+                        llenarTablaLibros(libros);
+                    } else {
+                        $('#dgvLibros tbody').empty();
+                        toastInfo('No se encontraron libros con los criterios especificados', 'Sin resultados');
+
+                    }
+                } catch (error) {
+                    console.error("Error buscando libros:", error);
+                    toastError('Error al buscar libros: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////FIN DE PARTE DE COMBOS////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Setup numeric field validation for código field
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, async function (validation, element) {
+                // Custom callback for código field - trigger search when valid
+                if (validation.isValid && element.val()) {
+                    await traerLibrosXTituloAutorEditorialYOCodigo();
+                }
+            });
+
+            // Setup price field validation for seña field in modal
+            setupPriceFieldValidation("#txtSenia");
+
+            $("#txtCodigo").on("change", async function () {
+                var codigo = $(this).val();
+                const validation = validarCodigo(codigo);
+                if (validation.isValid) {
+                    await traerLibrosXTituloAutorEditorialYOCodigo();
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS//////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Book selection handlers
+            $('#dgvLibros').on('change', 'input[type="checkbox"]', function () {
+                const row = $(this).closest('tr');
+                const idLibro = parseInt(row.find('td:eq(2)').text());
+                const cantidad = parseInt(row.find('input[type="number"]').val()) || 1;
+
+                if ($(this).is(':checked')) {
+                    // Acá agrego el libro a la lista global
+                    row.find('input[type="number"]').val(1);
+                    const libroExistente = selectedBooksGlobal.find(book => book.id === idLibro);
+                    if (libroExistente) {
+                        libroExistente.cantidad = cantidad;
+                    } else {
+                        selectedBooksGlobal.push({ id: idLibro, cantidad: cantidad });
+                    }
+
+                    actualizarReserva(row, idLibro, cantidad);
+                } else {
+                    // Acá lo saco de la lista global
+                    selectedBooksGlobal = selectedBooksGlobal.filter(book => book.id !== idLibro);
+                    row.find('input[type="number"]').val(0);
+                    actualizarReserva(row, idLibro, 0);
+                }
+
+                actualizarBotones();
+            });
+
+            $('#dgvLibros').on('change', 'input[type="number"]', function () {
+                const row = $(this).closest('tr');
+                const idLibro = parseInt(row.find('td:eq(2)').text());
+                const cantidad = parseInt($(this).val()) || 0;
+
+                if (cantidad > 0) {
+                    row.find('input[type="checkbox"]').prop('checked', true);
+
+                    // Acá actualizo en la lista global
+                    const libroExistente = selectedBooksGlobal.find(book => book.id === idLibro);
+                    if (libroExistente) {
+                        libroExistente.cantidad = cantidad;
+                    } else {
+                        selectedBooksGlobal.push({ id: idLibro, cantidad: cantidad });
+                    }
+
+                    actualizarReserva(row, idLibro, cantidad);
+                } else {
+                    row.find('input[type="checkbox"]').prop('checked', false);
+
+                    // Acá lo saco de la lista global
+                    selectedBooksGlobal = selectedBooksGlobal.filter(book => book.id !== idLibro);
+
+                    actualizarReserva(row, idLibro, 0);
+                }
+
+                actualizarBotones();
+            });
+
+            // Button handlers
+            $('#btnBuscar').click(async function () {
+                await traerLibrosXTituloAutorEditorialYOCodigo();
+            });
+
+            $('#btnLimpiar').click(function () {
+                limpiarBusqueda();
+            });
+
+            $('#btnReservar').click(async function () {
+                $('#clientModal').modal('show');
+                await cargarDatosCliente();
+            });
+
+            // Client modal handlers
+            $('input[name="clientType"]').change(function () {
+                if ($('#rbtNuevo').is(':checked')) {
+                    // Clear all fields when switching to new client
+                    $('#txtClienteCodigo').val('').prop('disabled', true);
+                    $('#cboClienteNombre').val('').prop('disabled', false);
+                    $('#txtTelefono').val('').prop('disabled', false);
+                    $('#txtDireccion').val('').prop('disabled', false);
+                    $('#cboLocalidad').prop('disabled', false);
+                    $('#txtMail').val('').prop('disabled', false);
+                    // NO tocar cboFormaPago ni txtSenia si el pago está aprobado
+                    if (!seniaPaymentApproved && !reservaPaymentApproved) {
+                        $('#cboFormaPago').prop('disabled', false);
+                        $('#txtSenia').prop('disabled', false);
+                    }
+
+                    // Load next code for new client
+                    cargarNextCodigo();
+                } else {
+                    // Clear all fields when switching to registered client
+                    $('#txtClienteCodigo').val('').prop('disabled', false);
+                    $('#cboClienteNombre').val('').prop('disabled', false);
+                    $('#txtTelefono').val('').prop('disabled', false);
+                    $('#txtDireccion').val('').prop('disabled', false);
+                    $('#cboLocalidad').prop('disabled', false);
+                    $('#txtMail').val('').prop('disabled', false);
+                    // NO tocar cboFormaPago ni txtSenia si el pago está aprobado
+                    if (!seniaPaymentApproved && !reservaPaymentApproved) {
+                        $('#cboFormaPago').prop('disabled', false);
+                        $('#txtSenia').prop('disabled', false);
+                    }
+
+                    // Load clients for selection
+                    cargarClientes();
+                }
+
+                // Reset total calculation
+                calcularPrecios();
+
+                // Acá controlo la UI según el estado del pago
+                controlarUISegunEstadoPago();
+            });
+
+
+            $('#txtClienteCodigo').on('input', async function () {
+                if ($('#rbtRegistrado').is(':checked')) {
+                    const codigo = $(this).val();
+                    if (codigo) {
+                        await buscarClientePorCodigo(codigo);
+                    }
+                }
+            });
+
+            $('#cboClienteNombre').on('input', async function () {
+                if ($('#rbtRegistrado').is(':checked')) {
+                    if ($('#rbtRegistrado').is(':checked')) {
+                        const searchText = $(this).val();
+                        if (searchText.length >= 3 || searchText === "") {
+                            await buscarClientesPorNombre(searchText);
+                        }
+                    }
+                }
+            });
+
+            $('#cboClienteNombre').on('change', async function () {
+                if ($('#rbtRegistrado').is(':checked')) {
+                    const selectedOption = $('#clienteList option[value="' + $(this).val() + '"]');
+                    if (selectedOption.length > 0) {
+                        const id = selectedOption.data('id');
+                        await buscarClientePorId(id);
+                    }
+                }
+            });
+
+            $('#cboFormaPago').change(function () {
+                // Si el pago ya está aprobado, no permitir cambios
+                if (seniaPaymentApproved || reservaPaymentApproved) {
+                    toastError('No se puede cambiar la forma de pago después de aprobar el pago', 'Pago Aprobado');
+                    return;
+                }
+
+                idFormaPago = parseInt($(this).val());
+                console.log(`Forma de pago seleccionada: ${idFormaPago}`);
+
+                const porcentajeRecargo = obtenerPorcentajeRecargo(idFormaPago);
+                $('#txtPorcentajeRecargo').val(`${porcentajeRecargo}%`);
+
+                calcularPrecios();
+            });
+
+            $('#txtSenia').on('input', function () {
+                const originalValue = $(this).val();
+                const validation = validarPrecio(originalValue, "seña");
+
+                if (validation.cleanValue !== originalValue) {
+                    $(this).val(validation.cleanValue);
+                }
+            });
+
+            $('#btnConfirmarReserva').click(async function () {
+                // Acá valido que si hay seña, esté pagada
+                const seniaValue = parseFloat($('#txtSenia').val()) || 0;
+                if (seniaValue > 0 && !seniaPaymentApproved) {
+                    toastError('Debe confirmar el pago de la seña antes de continuar', 'Pago Requerido');
+                    return;
+                }
+                await confirmarReserva();
+            });
+
+            function llenarTablaLibros(libros) {
+                const tbody = $('#dgvLibros tbody');
+                tbody.empty();
+
+                libros.forEach(libro => {
+                    const reservaInfo = librosAReservar.get(libro.id);
+                    const isChecked = reservaInfo ? true : false;
+                    const cantidad = reservaInfo ? reservaInfo.cantidad : 0;
+
+                    const row = `
+                                    <tr>
+                                        <td><input type="checkbox" ${isChecked ? 'checked' : ''}></td>
+                                        <td><input type="number" class="form-control" value="${cantidad}" min="0" style="width: 80px;"></td>
+                                        <td style="display:none;">${libro.id}</td>
+                                        <td>${libro.codigo}</td>
+                                        <td>${libro.titulo}</td>
+                                        <td>${libro.serie || ''}</td>
+                                        <td>${libro.autor || ''}</td>
+                                        <td>${libro.editorial || ''}</td>
+                                        <td>${libro.materia || ''}</td>
+                                        <td>${libro.precioLista.toFixed(2)}</td>
+                                        <td>${libro.precio.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                    tbody.append(row);
+                });
+            }
+
+            function actualizarReserva(row, idLibro, cantidad) {
+                if (cantidad > 0) {
+                    const precioLista = parseFloat(row.find('td:eq(9)').text());
+                    const precioCredito = parseFloat(row.find('td:eq(10)').text());
+                    const precioContado = parseFloat(row.find('td:eq(9)').text());
+
+                    const subtotalContado = cantidad * calcularPrecioConPorcentaje(precioContado, 1); // Efectivo
+                    const subtotalDebito = cantidad * calcularPrecioConPorcentaje(precioContado, 2); // Debito  
+                    const subtotalCredito = cantidad * calcularPrecioConPorcentaje(precioContado, 3); // Credito
+                    const subtotalTransferencia = cantidad * calcularPrecioConPorcentaje(precioContado, 4); // Transferencia
+
+                    const libroData = {
+                        idLibro: idLibro,
+                        cantidad: cantidad,
+                        codigo: parseInt(row.find('td:eq(3)').text()),
+                        titulo: row.find('td:eq(4)').text(),
+                        precio: precioCredito,
+                        contado: precioContado,
+                        subtotalContado: subtotalContado,
+                        subtotalCredito: subtotalCredito,
+                        subtotalDebito: subtotalDebito,
+                        subtotalTransferencia: subtotalTransferencia
+                    };
+                    librosAReservar.set(idLibro, libroData);
+                } else {
+                    librosAReservar.delete(idLibro);
+                }
+
+                actualizarTablaControl();
+                actualizarTotales();
+            }
+
+            function actualizarTablaControl() {
+                const tbody = $('#dgvControl tbody');
+                tbody.empty();
+
+                librosAReservar.forEach(libro => {
+                    const row = `
+                                    <tr>
+                                        <td>${libro.cantidad}</td>
+                                        <td style="display:none;">${libro.idLibro}</td>
+                                        <td>${libro.codigo}</td>
+                                        <td>${libro.titulo}</td>
+                                        <td>${libro.contado.toFixed(2)}</td>
+                                        <td>${libro.precio.toFixed(2)}</td>
+                                        <td>${libro.subtotalContado.toFixed(2)}</td>
+                                        <td>${libro.subtotalCredito.toFixed(2)}</td>
+                                    </tr>
+                                `;
+                    tbody.append(row);
+                });
+            }
+
+            function actualizarTotales() {
+                // Aca calculamos todos los totales usando los porcentajes dinamicos
+                let totalEfectivo = 0;
+                let totalDebito = 0;
+                let totalCredito = 0;
+                let totalTransferencia = 0;
+
+                librosAReservar.forEach(libro => {
+                    totalEfectivo += libro.subtotalContado;
+                    totalDebito += libro.subtotalDebito;
+                    totalCredito += libro.subtotalCredito;
+                    totalTransferencia += libro.subtotalTransferencia;
+                });
+
+                // Mantenemos las variables globales para compatibilidad
+                totalContado = totalEfectivo; // Por defecto, contado = efectivo
+                totalCredito = totalCredito;
+
+                if (librosAReservar.size > 0) {
+                    // Aca mostramos los totales de cada metodo de pago
+                    const porcentajeEfectivo = obtenerPorcentajeRecargo(1);
+                    const porcentajeDebito = obtenerPorcentajeRecargo(2);
+                    const porcentajeCred = obtenerPorcentajeRecargo(3);
+                    const porcentajeTransf = obtenerPorcentajeRecargo(4);
+
+                    $('#lblTotal').html(`
+                        <strong>Totales por Metodo de Pago:</strong><br>
+                        Efectivo (${porcentajeEfectivo}%): $${totalEfectivo.toFixed(2)} | 
+                        Debito (${porcentajeDebito}%): $${totalDebito.toFixed(2)} | 
+                        Credito (${porcentajeCred}%): $${totalCredito.toFixed(2)} | 
+                        Transferencia (${porcentajeTransf}%): $${totalTransferencia.toFixed(2)}
+                    `).show();
+                } else {
+                    $('#lblTotal').hide();
+                }
+            }
+
+            function actualizarBotones() {
+                $('#btnReservar').prop('disabled', librosAReservar.size === 0);
+            }
+
+            function limpiarBusqueda() {
+                $('#txtTitulo').val('');
+                $('#txtCodigo').val('');
+                $('#cboAutor').val('');
+                $('#cboEditorial').val('');
+                $('#cboMateria').val('');
+                $('#cboSerie').val('');
+                $('#dgvLibros tbody').empty();
+                selectedBooksGlobal = [];
+                seleccionados = {
+                    autor: { id: null, text: null },
+                    editorial: { id: null, text: null },
+                    materia: { id: null, text: null },
+                    serie: { id: null, text: null }
+                };
+                librosAReservar.clear();
+                actualizarTablaControl();
+                actualizarTotales();
+                actualizarBotones();
+            }
+
+            async function cargarDatosCliente() {
+                await cargarCombosModal();
+                try {
+                    // Cargar localidades
+                    if (localidadesGlobal.length === 0) {
+                        localidadesGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerLocalidades",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboLocalidad').empty();
+                    localidadesGlobal.forEach(loc => {
+                        $('#cboLocalidad').append(`<option value="${loc.id}">${loc.localidad}</option>`);
+                    });
+
+                    // Cargar formas de pago
+                    if (formasPagoGlobal.length === 0) {
+                        formasPagoGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerFormasPago",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboFormaPago').empty();
+                    formasPagoGlobal.forEach(fp => {
+                        $('#cboFormaPago').append(`<option value="${fp.id}">${fp.formaPago}</option>`);
+                    });
+
+                    idFormaPago = parseInt($('#cboFormaPago').val()) || 0;
+                    calcularPrecios();
+
+                    if ($('#rbtRegistrado').is(':checked')) {
+                        await cargarClientes();
+                    }
+
+                } catch (error) {
+                    console.error("Error cargando datos de cliente:", error);
+                    await Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: 'Error al cargar datos del cliente'
+                    });
+                }
+            }
+
+            async function cargarClientes() {
+                try {
+                    if (clientesGlobal.length === 0) {
+                        clientesGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerClientes",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#clienteList').empty();
+                    clientesGlobal.forEach(cliente => {
+                        $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                    });
+
+                } catch (error) {
+                    console.error("Error cargando clientes:", error);
+                }
+            }
+
+            async function cargarNextCodigo() {
+                try {
+                    const nextCodigo = await $.ajax({
+                        url: "/api/Cliente/TraerNextCodigo",
+                        type: "GET",
+                        dataType: "json"
+                    });
+                    $('#txtClienteCodigo').val(nextCodigo);
+                } catch (error) {
+                    console.error("Error obteniendo próximo código:", error);
+                }
+            }
+
+            async function buscarClientePorCodigo(codigo) {
+                try {
+                    const cliente = await $.ajax({
+                        url: `/api/Cliente/TraerClienteXCodigo/${codigo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    if (cliente) {
+                        llenarDatosCliente(cliente);
+                    } else {
+                        await Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'No se encontró cliente con ese código'
+                        });
+                    }
+
+                } catch (error) {
+                    console.error("Error buscando cliente por código:", error);
+                }
+            }
+
+            async function buscarClientePorId(id) {
+                try {
+                    const cliente = await $.ajax({
+                        url: `/api/Cliente/TraerClienteXId/${id}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    if (cliente) {
+                        llenarDatosCliente(cliente);
+                    }
+
+                } catch (error) {
+                    console.error("Error buscando cliente por ID:", error);
+                }
+            }
+
+            async function buscarClientesPorNombre(nombre) {
+                try {
+                    const clientes = await $.ajax({
+                        url: `/api/Cliente/TraerClientesXNombre?nombre=${nombre}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#clienteList').empty();
+                    clientes.forEach(cliente => {
+                        $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                    });
+
+                } catch (error) {
+                    console.error("Error buscando clientes por nombre:", error);
+                }
+            }
+
+            function llenarDatosCliente(cliente) {
+                $('#txtClienteCodigo').val(cliente.codigo);
+                $('#cboClienteNombre').val(cliente.nombre);
+                $('#txtTelefono').val(cliente.telefono || '');
+                $('#txtDireccion').val(cliente.direccion || '');
+                $('#cboLocalidad').val(cliente.idLocalidad || '');
+                $('#txtMail').val(cliente.email || '');
+                idCliente = cliente.id;
+            }
+
+            function calcularPrecios() {
+                // Aca usamos el total correspondiente al metodo de pago seleccionado
+                let total = 0;
+                librosAReservar.forEach(libro => {
+                    switch (idFormaPago) {
+                        case 1: // Efectivo
+                            total += libro.subtotalContado;
+                            break;
+                        case 2: // Debito
+                            total += libro.subtotalDebito;
+                            break;
+                        case 3: // Credito
+                            total += libro.subtotalCredito;
+                            break;
+                        case 4: // Transferencia
+                            total += libro.subtotalTransferencia;
+                            break;
+                        default:
+                            total += libro.subtotalContado;
+                    }
+                });
+                if (idFormaPago > 0 && librosAReservar.size > 0) {
+                    // Acá calculo la seña mínima usando el total calculado, no las variables globales
+                    const porcentajeSeniaMinima = obtenerSeniaMinima(idFormaPago);
+                    const seniaMinimaCalculada = total * porcentajeSeniaMinima / 100;
+                    // Solo actualizar si el campo está vacío o tiene el valor mínimo anterior
+                    const seniaActual = parseFloat($('#txtSenia').val()) || 0;
+                    const seniaAnterior = parseFloat($('#txtSenia').attr('data-previous-min')) || 0;
+                    if (seniaActual === 0 || seniaActual === seniaAnterior) {
+                        if (!seniaPaymentApproved) {
+                            $('#txtSenia').val(seniaMinimaCalculada.toFixed(2));
+                            seniaAmount = seniaMinimaCalculada;
+                            // Acá también reseteo y recreo el checkout cuando cambio la seña automáticamente
+                            if (seniaMinimaCalculada > 0) {
+                                resetearPagoSenia();
+                                $('#seniaPaymentSection').show();
+                                inicializarPagoSenia();
+                            }
+                        }
+                    }
+                    $('#txtSenia').attr('min', seniaMinimaCalculada);
+                    $('#txtSenia').attr('data-previous-min', seniaMinimaCalculada);
+                    // Acá ya no hace falta llamar de nuevo a inicializarPagoSenia
+                    // porque ya lo hiciste arriba
+                    if (seniaMinimaCalculada > 0 && seniaAmount >= seniaMinimaCalculada) {
+                        $('#seniaPaymentSection').show();
+                        // inicializarPagoSenia(); <-- Comentá o borrá esta línea
+                    }
+                }
+                $('#txtTotal').val(total.toFixed(2));
+            }
+
+            function limpiarFormularioCliente() {
+                $('#txtClienteCodigo').val('');
+                $('#cboClienteNombre').val('');
+                $('#txtTelefono').val('');
+                $('#txtDireccion').val('');
+                $('#cboLocalidad').val('');
+                $('#txtMail').val('');
+                $('#txtSenia').val('');
+
+                if ($('#cboLocalidad option').length > 0) {
+                    $('#cboLocalidad').val($('#cboLocalidad option:first').val());
+                }
+                if ($('#cboFormaPago option').length > 0) {
+                    $('#cboFormaPago').val($('#cboFormaPago option:first').val());
+                }
+
+                calcularPrecios();
+
+                if ($('#rbtNuevo').is(':checked')) {
+                    cargarNextCodigo();
+                }
+            }
+
+            async function confirmarReserva() {
+                let isValid = true;
+                let mensajeError = "";
+
+                if ($('#rbtRegistrado').is(':checked')) {
+                    if (!$('#cboClienteNombre').val()) {
+                        mensajeError += "Debe seleccionar un cliente registrado.\n";
+                        isValid = false;
+                    }
+                } else {
+                    if (!$('#cboClienteNombre').val() || $('#cboClienteNombre').val().length < 5) {
+                        mensajeError += "Debe ingresar un nombre de cliente válido.\n";
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) {
+                    toastTopDerecha(mensajeError, 'Error');
+                    return;
+                }
+
+                if (parseFloat($('#txtSenia').val()) > 0 && !seniaPaymentApproved) {
+                    toastError('Debe confirmar el pago de la seña antes de continuar', 'Pago Requerido');
+                    return;
+                }
+
+                try {
+                    const cliente = {
+                        codigo: parseInt($('#txtClienteCodigo').val()),
+                        nombre: $('#cboClienteNombre').val(),
+                        telefono: $('#txtTelefono').val(),
+                        direccion: $('#txtDireccion').val(),
+                        idLocalidad: parseInt($('#cboLocalidad').val()) || 1,
+                        localidad: $('#cboLocalidad option:selected').text() || "No tiene",
+                        email: $('#txtMail').val()
+                    };
+
+                    const clienteResult = await $.ajax({
+                        url: "/api/Cliente/GuardarOModificarCliente",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(cliente)
+                    });
+
+                    if (clienteResult.length === 0 || clienteResult[0] === -1) {
+                        toastError('Error al guardar el cliente', 'Error');
+                        return;
+                    }
+
+                    idCliente = clienteResult[2];
+
+                    const senia = parseFloat($('#txtSenia').val()) || 0;
+                    const total = parseFloat($('#txtTotal').val()) || 0;
+
+                    const reservas = [];
+                    librosAReservar.forEach((libro, idLibro) => {
+                        const precioLibro = libro.precio;
+                        const precioContado = libro.contado;
+
+                        for (let i = 0; i < libro.cantidad; i++) {
+                            let libroPrecio = 0;
+                            switch (idFormaPago) {
+                                case 1: // Efectivo
+                                    libroPrecio = libro.subtotalContado / libro.cantidad;
+                                    break;
+                                case 2: // Debito
+                                    libroPrecio = libro.subtotalDebito / libro.cantidad;
+                                    break;
+                                case 3: // Credito
+                                    libroPrecio = libro.subtotalCredito / libro.cantidad;
+                                    break;
+                                case 4: // Transferencia
+                                    libroPrecio = libro.subtotalTransferencia / libro.cantidad;
+                                    break;
+                                default:
+                                    libroPrecio = precioContado;
+                            }
+
+                            let libroSenia = 0;
+                            let libroSaldo = libroPrecio;
+
+                            if (senia > 0) {
+                                if (senia === total) {
+                                    libroSenia = libroPrecio;
+                                    libroSaldo = 0;
+                                } else {
+                                    libroSenia = (libroPrecio / total) * senia;
+                                    libroSaldo = libroPrecio - libroSenia;
+                                }
+                            }
+
+                            const reserva = {
+                                idLibro: idLibro,
+                                idCliente: idCliente,
+                                idFormaPago: idFormaPago,
+                                senia: libroSenia,
+                                saldo: libroSaldo,
+                                fchreserva: new Date().toISOString(),
+                                libroPedido: false,
+                                asignada: false,
+                                entregada: false,
+                                activa: true
+                            };
+                            reservas.push(reserva);
+                        }
+                    });
+
+                    const resultado = await $.ajax({
+                        url: "/api/Reserva/GuardarReservas",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(reservas)
+                    });
+
+                    const todosExitosos = Object.values(resultado).every(value => value === 1);
+
+                    if (todosExitosos) {
+                        const reservasIds = Object.keys(resultado).map(id => parseInt(id));
+
+                        const reservasCompletas = await $.ajax({
+                            url: "/api/Reserva/TraerReservasXId",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(reservasIds)
+                        });
+
+                        toastExito(`Reservas guardadas exitosamente: ${reservasIds.join(', ')}`, 'Éxito');
+                        if (reservasIds.length === 0) {
+                            toastError("No hay IDs de reservas para generar PDF");
+                            throw new Error("No hay IDs de reservas para generar PDF");
+                        }
+                        try {
+                            const pdfResult = await $.ajax({
+                                url: "/api/PDF/CrearPDFReserva",
+                                type: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(reservasCompletas)
+                            });
+
+                            if (pdfResult.path) {
+                                // Acá descargo el PDF
+                                descargarPDF(pdfResult.path, `reserva_${new Date().toISOString().slice(0, 10)}.pdf`);
+                                toastExito('Reservas guardadas y PDF generado exitosamente', 'Éxito');
+                            }
+                        } catch (pdfError) {
+                            console.error("Error con PDF:", pdfError);
+                            toastTopDerecha('Las reservas se guardaron pero hubo un error al generar/imprimir el PDF', 'Advertencia');
+                        }
+
+                        $('#clientModal').modal('hide');
+                        resetearTodoEstadoInicial();
+                    } else {
+                        toastError('Hubo errores al guardar algunas reservas', 'Error');
+                    }
+
+                } catch (error) {
+                    console.error("Error en el proceso de reserva:", error);
+                    toastError('Error al procesar la reserva: ' + (error.responseText || error.message), 'Error');
+                }
+            }
+
+            $('#btnLimpiarCliente').click(function () {
+                limpiarFormularioCliente();
+            });
+
+            $('#clientModal').on('show.bs.modal', function () {
+                if ($('#rbtRegistrado').is(':checked')) {
+                    cargarClientes();
+                } else {
+                    cargarNextCodigo();
+                }
+                calcularPrecios();
+
+                // Acá controlo la UI cuando se abre el modal
+                controlarUISegunEstadoPago();
+            });
+
+            $('input, select').on('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $('input:visible, select:visible, button:visible');
+                    const idx = inputs.index(this);
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    }
+                }
+            });
+            initializeMercadoPago()
+            handleReservaMercadoPagoReturn();
+
+            function descargarPDF(nombreArchivo, nombreDescarga = null) {
+                const url = `/api/PDF/DescargarPDF/${encodeURIComponent(nombreArchivo)}`;
+
+                // Creamos un link temporal para la descarga
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = nombreDescarga || nombreArchivo;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            // Funciones para manejar el pago de seña
+            function inicializarPagoSenia() {
+                // Acá inicializo MercadoPago para la seña si es necesario
+                if (seniaAmount > 0 && !seniaCurrentPreferenceId) {
+                    const clientEmail = 'test_user_1651065437@testuser.com';
+                    const description = `Pago de seña $${seniaAmount.toFixed(2)}`;
+                    initializeSeniaCheckout(seniaAmount, description, clientEmail);
+                }
+            }
+
+            async function initializeSeniaCheckout(amount, description, clientEmail) {
+                try {
+                    console.log('Inicializando checkout seña con:', { amount, description, clientEmail });
+                    showSeniaPaymentStatus('Preparando pago de seña...', 'pending');
+
+                    seniaCurrentPreferenceId = await createSeniaPaymentPreference(amount, description, clientEmail);
+                    console.log('Preference ID seña creado:', seniaCurrentPreferenceId);
+
+                    // Acá limpio el checkout anterior si existe
+                    if (seniaCheckout && typeof seniaCheckout.unmount === 'function') {
+                        seniaCheckout.unmount();
+                    }
+
+                    // Crear el checkout con la preferencia real para seña
+                    seniaCheckout = mp.checkout({
+                        preference: {
+                            id: seniaCurrentPreferenceId
+                        },
+                        render: {
+                            container: '#senia-mercadopago-checkout',
+                            label: 'Pagar Seña con MercadoPago'
+                        }
+                    });
+
+                    $('#senia-mercadopago-button').prop('disabled', false);
+                    hideSeniaPaymentStatus();
+
+                } catch (error) {
+                    console.error("Error inicializando checkout seña:", error);
+                    showSeniaPaymentStatus('Error al preparar el pago de seña', 'error');
+                    toastError('Error al preparar el pago de seña con MercadoPago', 'Error');
+                }
+            }
+
+            async function createSeniaPaymentPreference(amount, description, clientEmail) {
+                try {
+                    guardarEstadoEnLocalStorage();
+                    const tipoCliente = $('#rbtNuevo').is(':checked') ? 'nuevo' : 'registrado';
+                    const clientData = {
+                        codigo: $('#txtClienteCodigo').val(),
+                        nombre: $('#cboClienteNombre').val(),
+                        telefono: $('#txtTelefono').val(),
+                        direccion: $('#txtDireccion').val(),
+                        localidad: $('#cboLocalidad').val(),
+                        mail: $('#txtMail').val()
+                    };
+                    const clientDataEncoded = btoa(JSON.stringify(clientData));
+                    const preference = {
+                        items: [{
+                            title: description,
+                            quantity: 1,
+                            currencyId: 'ARS',
+                            unitPrice: amount
+                        }],
+                        payer: {
+                            email: clientEmail
+                        },
+                        backUrls: {
+                            success: window.location.href.split('?')[0],
+                            failure: window.location.href.split('?')[0],
+                            pending: window.location.href.split('?')[0]
+                        },
+                        autoReturn: 'approved',
+                        externalReference: `reserva_senia_${selectedBooksGlobal.map(book => `${book.id}_${book.cantidad}`).join('_')}_fp${$('#cboFormaPago').val()}_tc${tipoCliente}_cd${clientDataEncoded}_${Date.now()}`,
+                        sandbox: true
+                    };
+
+                    const response = await $.ajax({
+                        url: "/api/MercadoPago/CreatePreference",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(preference)
+                    });
+
+                    return response.preferenceId;
+                } catch (error) {
+                    console.error("Error creando preferencia seña:", error);
+                    throw error;
+                }
+            }
+
+            function showSeniaPaymentStatus(message, type) {
+                const statusDiv = $('#seniaPaymentStatus');
+                statusDiv.removeClass('payment-success payment-error payment-pending');
+                statusDiv.addClass(`payment-${type}`);
+                statusDiv.html(`<i class="bi bi-${getStatusIcon(type)}"></i> ${message}`);
+                statusDiv.show();
+            }
+
+            function hideSeniaPaymentStatus() {
+                $('#seniaPaymentStatus').hide();
+            }
+
+            function getStatusIcon(type) {
+                switch (type) {
+                    case 'success': return 'check-circle';
+                    case 'error': return 'x-circle';
+                    case 'pending': return 'clock';
+                    default: return 'info-circle';
+                }
+            }
+
+            function resetearPagoSenia() {
+                seniaPaymentApproved = false;
+                seniaCurrentPreferenceId = null;
+                if (seniaCheckout && typeof seniaCheckout.unmount === 'function') {
+                    seniaCheckout.unmount();
+                    seniaCheckout = null;
+                }
+                $('#senia-mercadopago-checkout').empty();
+                hideSeniaPaymentStatus();
+                $('#senia-mercadopago-button').prop('disabled', true);
+            }
+
+            // Event listeners para los botones de pago de seña
+            $('#btnSeniaEfectivo').click(async function () {
+                const result = await Swal.fire({
+                    title: '¿Seña en efectivo?',
+                    text: `¿Confirma que recibió $${seniaAmount.toFixed(2)} de seña en efectivo?`,
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, recibido',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    seniaPaymentApproved = true;
+                    showSeniaPaymentStatus('Seña en efectivo confirmada', 'success');
+                    toastExito('Seña en efectivo registrada', 'Seña Confirmada');
+
+                    // Acá controlo la UI después de confirmar efectivo
+                    controlarUISegunEstadoPago();
+                }
+            });
+
+            // Modificar el evento $('#senia-mercadopago-button').click, agregar al inicio:
+            $('#senia-mercadopago-button').click(function () {
+                guardarEstadoEnLocalStorage();
+                if (seniaCurrentPreferenceId && selectedBooksGlobal.length > 0) {
+                    showSeniaPaymentStatus('Procesando pago de seña con MercadoPago...', 'pending');
+                }
+            });
+
+            async function cargarCombosModal() {
+                try {
+                    // Cargo localidades si no las tengo
+                    if (localidadesGlobal.length === 0) {
+                        localidadesGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerLocalidades",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboLocalidad').empty();
+                    localidadesGlobal.forEach(loc => {
+                        $('#cboLocalidad').append(`<option value="${loc.id}">${loc.localidad}</option>`);
+                    });
+
+                    // Cargo formas de pago si no las tengo
+                    if (formasPagoGlobal.length === 0) {
+                        formasPagoGlobal = await $.ajax({
+                            url: "/api/Cliente/TraerFormasPago",
+                            type: "GET",
+                            dataType: "json"
+                        });
+                    }
+
+                    $('#cboFormaPago').empty();
+                    formasPagoGlobal.forEach(fp => {
+                        $('#cboFormaPago').append(`<option value="${fp.id}">${fp.formaPago}</option>`);
+                    });
+
+                    // Acá también cargo los clientes para el datalist
+                    await cargarClientes();
+
+                } catch (error) {
+                    console.error("Error cargando combos del modal:", error);
+                }
+            }
+
+            function controlarUISegunEstadoPago() {
+                if (seniaPaymentApproved) { // Acá saco reservaPaymentApproved
+                    // Acá oculto completamente las opciones de pago
+                    $('#seniaPaymentSection').hide();
+
+                    // Bloqueo los campos de seña y forma de pago
+                    $('#txtSenia').prop('disabled', true);
+                    $('#cboFormaPago').prop('disabled', true);
+
+                    // Cambio el estilo para que se vea que están bloqueados
+                    $('#txtSenia').addClass('payment-locked');
+                    $('#cboFormaPago').addClass('payment-locked');
+
+                } else {
+                    // Si no está pagado, habilito todo normal
+                    $('#txtSenia').prop('disabled', false);
+                    $('#cboFormaPago').prop('disabled', false);
+
+                    // Saco el estilo de bloqueado
+                    $('#txtSenia').removeClass('payment-locked');
+                    $('#cboFormaPago').removeClass('payment-locked');
+
+                    // Muestro las opciones de pago si hay seña
+                    if (parseFloat($('#txtSenia').val()) > 0) {
+                        $('#seniaPaymentSection').show();
+                    }
+                }
+            }
+
+            function resetearTodoEstadoInicial() {
+                // Acá reseteo todas las variables globales de reserva
+                librosAReservar.clear();
+                totalContado = 0;
+                totalCredito = 0;
+                idFormaPago = 0;
+                idCliente = 0;
+
+                // Variables de pago de seña
+                seniaPaymentApproved = false;
+                seniaCurrentPreferenceId = null;
+                seniaAmount = 0;
+                reservaPaymentApproved = false;
+                reservaCurrentPreferenceId = null;
+                selectedBooksGlobal = [];
+
+                // Limpio el checkout de MercadoPago si existe
+                if (seniaCheckout && typeof seniaCheckout.unmount === 'function') {
+                    seniaCheckout.unmount();
+                    seniaCheckout = null;
+                }
+                if (reservaCheckout && typeof reservaCheckout.unmount === 'function') {
+                    reservaCheckout.unmount();
+                    reservaCheckout = null;
+                }
+
+                // Limpio los contenedores de MercadoPago
+                $('#senia-mercadopago-checkout').empty();
+
+                // Oculto y reseteo las secciones de pago
+                $('#seniaPaymentSection').hide();
+                hideSeniaPaymentStatus();
+
+                // Reseteo la UI de los libros seleccionados
+                $('#dgvLibros tbody tr').each(function () {
+                    const row = $(this);
+                    row.find('input[type="checkbox"]').prop('checked', false);
+                    row.find('input[type="number"]').val(0);
+                    row.removeClass('table-active');
+                });
+
+                // Limpio el formulario del cliente
+                limpiarFormularioCliente();
+
+                // Limpio la búsqueda
+                limpiarBusqueda();
+
+                // Reseteo el botón reservar
+                $('#btnReservar').prop('disabled', true);
+
+                // Oculto la información de totales
+                $('#lblTotal').hide();
+
+                // Reseteo los radios de tipo de cliente al estado inicial
+                $('#rbtRegistrado').prop('checked', true);
+                $('#rbtNuevo').prop('checked', false);
+
+                // Habilito todos los campos que podrían estar bloqueados
+                $('#txtSenia').prop('disabled', false).removeClass('payment-locked');
+                $('#cboFormaPago').prop('disabled', false).removeClass('payment-locked');
+
+                // Mensaje de éxito
+                toastExito('Sistema resetado. Listo para nueva reserva', 'Estado Inicial');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,847 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Asignación de Libros Reservados</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="/Comun/css/temaOscuro.css">
+    <style>
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .btn-asignar {
+            font-size: 1.5rem;
+            padding: 10px 30px;
+        }
+
+        .book-grid {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .search-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="navbar-container"></div>
+
+    <div class="container mt-4">
+        <h1>Asignación de Libros Reservados</h1>
+
+        <!-- Search Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Buscar Libros Reservados</h3>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtTitulo">Título:</label>
+                            <input type="text" class="form-control" id="txtTitulo" placeholder="Ingrese título">
+                        </div>
+                        <div class="form-group">
+                            <label for="cboSerie">Serie:</label>
+                            <input type="text" class="form-control" id="cboSerie" list="serieList" placeholder="Seleccione o ingrese serie">
+                            <datalist id="serieList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboAutor">Autor:</label>
+                            <input type="text" class="form-control" id="cboAutor" list="autorList" placeholder="Seleccione o ingrese autor">
+                            <datalist id="autorList"></datalist>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboEditorial">Editorial:</label>
+                            <input type="text" class="form-control" id="cboEditorial" list="editorialList" placeholder="Seleccione o ingrese editorial">
+                            <datalist id="editorialList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="cboMateria">Materia:</label>
+                            <input type="text" class="form-control" id="cboMateria" list="materiaList" placeholder="Seleccione o ingrese materia">
+                            <datalist id="materiaList"></datalist>
+                        </div>
+                        <div class="form-group">
+                            <label for="txtCodigo">Código del Libro:</label>
+                            <input type="text" class="form-control" id="txtCodigo" placeholder="Ingrese código">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="cboCliente">Cliente:</label>
+                            <input type="text" class="form-control" id="cboCliente" list="clienteList" placeholder="Seleccione o ingrese cliente">
+                            <datalist id="clienteList"></datalist>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="txtIdReserva">ID de Reserva:</label>
+                            <input type="text" class="form-control" id="txtIdReserva" placeholder="Ingrese ID de reserva">
+                        </div>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button type="button" id="btnLimpiar" class="btn btn-secondary">Limpiar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Books Results Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h3>Libros Reservados para Asignar</h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive book-grid">
+                    <table class="table table-striped" id="dgvLibros">
+                        <thead>
+                            <tr>
+                                <th>Asignar</th>
+                                <th>Cód. Reserva</th>
+                                <th style="display:none;">ID Cliente</th>
+                                <th>Cliente</th>
+                                <th style="display:none;">ID Libro</th>
+                                <th>Código Libro</th>
+                                <th>Título</th>
+                                <th>Serie</th>
+                                <th>Autor</th>
+                                <th>Editorial</th>
+                                <th>Materia</th>
+                                <th>Precio</th>
+                                <th>Precio Lista</th>
+                                <th>Contado</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Asignar Button -->
+        <div class="text-end mb-4">
+            <button type="button" id="btnAsignar" class="btn btn-success btn-asignar" disabled>Asignar Libros</button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.0/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.1/dist/sweetalert2.all.min.js"></script>
+    <script src="/Comun/js/comun.js"></script>
+    <script src="/Comun/js/tema.js"></script>
+    <script>
+        $(document).ready(async function () {
+            const isLoggedIn = await initializeCommon();
+
+            if (!isLoggedIn) return;
+
+            // Variables globales - acá pongo todas las que necesito para manejar la data
+            let autoresGlobal = [];
+            let editorialesGlobal = [];
+            let materiasGlobal = [];
+            let seriesGlobal = [];
+            let clientesGlobal = [];
+            let reservasAAsignar = []; // IDs de reservas para asignar
+            let combosCambiados = 0;
+
+            // Variables para controlar búsquedas en proceso - esto es para que no se superponga todo
+            let searchInProgress = {
+                autor: false,
+                editorial: false,
+                materia: false,
+                serie: false,
+                cliente: false
+            };
+
+            // Diccionarios para almacenar las selecciones - para que ande bien la búsqueda
+            let seleccionados = {
+                autor: { id: null, text: null },
+                editorial: { id: null, text: null },
+                materia: { id: null, text: null },
+                serie: { id: null, text: null },
+                cliente: { id: null, text: null }
+            };
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            //////////////////////////////////////INICIO DE PARTE DE COMBOS///////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Inicializo todo
+            await cargarCombos(1);
+            await cargarClientes();
+            setearCombos();
+            await buscarLibrosReservados();
+
+            // Eventos de campos de búsqueda
+            $("#txtTitulo").blur(function () {
+                if ($(this).val()) {
+                    buscarLibrosReservados();
+                }
+            });
+
+            $("#txtCodigo").blur(function () {
+                if ($(this).val()) {
+                    buscarLibrosReservados();
+                }
+            });
+
+            $("#txtIdReserva").blur(function () {
+                buscarLibrosReservados();
+            });
+
+            // Eventos de combos para autor - igual que en las otras páginas
+            $("#cboAutor").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.autor = true;
+                    await traerCoincidentes(searchText, "A", "#cboAutor", "#autorList");
+                    searchInProgress.autor = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboAutor").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.autor) {
+                    setTimeout(() => {
+                        $("#cboAutor").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#autorList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.autor = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.autor = { id: null, text: null };
+                }
+                buscarLibrosReservados();
+            });
+
+            // Eventos de combos para editorial
+            $("#cboEditorial").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.editorial = true;
+                    await traerCoincidentes(searchText, "E", "#cboEditorial", "#editorialList");
+                    searchInProgress.editorial = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboEditorial").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.editorial) {
+                    setTimeout(() => {
+                        $("#cboEditorial").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#editorialList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.editorial = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.editorial = { id: null, text: null };
+                }
+                buscarLibrosReservados();
+            });
+
+            // Eventos de combos para materia
+            $("#cboMateria").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.materia = true;
+                    await traerCoincidentes(searchText, "M", "#cboMateria", "#materiaList");
+                    searchInProgress.materia = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboMateria").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.materia) {
+                    setTimeout(() => {
+                        $("#cboMateria").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#materiaList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.materia = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.materia = { id: null, text: null };
+                }
+                buscarLibrosReservados();
+            });
+
+            // Eventos de combos para serie
+            $("#cboSerie").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                if (searchText.length >= 3 || searchText === "") {
+                    searchInProgress.serie = true;
+                    await traerCoincidentes(searchText, "S", "#cboSerie", "#serieList");
+                    searchInProgress.serie = false;
+                    combosCambiados = 1;
+                }
+            });
+
+            $("#cboSerie").on("change", function () {
+                const selectedText = $(this).val();
+
+                if (searchInProgress.serie) {
+                    setTimeout(() => {
+                        $("#cboSerie").trigger("change");
+                    }, 100);
+                    return;
+                }
+
+                const selectedOption = $("#serieList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.serie = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.serie = { id: null, text: null };
+                }
+                buscarLibrosReservados();
+            });
+
+            // Eventos de combos para cliente
+            $("#cboCliente").on("input", async function () {
+                const searchText = $(this).val();
+                if (searchText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                    return;
+                }
+
+                if (searchText.length >= 3) {
+                    try {
+                        const clientes = await $.ajax({
+                            url: `/api/Cliente/TraerClientesXNombre?nombre=${encodeURIComponent(searchText)}`,
+                            type: "GET",
+                            dataType: "json"
+                        });
+
+                        $('#clienteList').empty();
+                        clientes.forEach(cliente => {
+                            $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                        });
+                    } catch (error) {
+                        console.error("Error buscando clientes:", error);
+                    }
+                }
+            });
+
+            $("#cboCliente").on("change", function () {
+                const selectedText = $(this).val();
+                const selectedOption = $("#clienteList option").filter(function () {
+                    return $(this).val() === selectedText;
+                }).first();
+
+                if (selectedOption.length > 0) {
+                    seleccionados.cliente = {
+                        id: selectedOption.data("id"),
+                        text: selectedText
+                    };
+                } else if (selectedText === "") {
+                    seleccionados.cliente = { id: null, text: null };
+                }
+                buscarLibrosReservados();
+            });
+
+            // Funciones para cargar combos - igual que en las otras páginas
+            async function cargarCombos(opcion) {
+                if (opcion === 1) {
+                    // Cargar autores
+                    if (autoresGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerAutores",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            autoresGlobal = response;
+                            cargarCombo("A", autoresGlobal, "#autorList");
+                        } catch (error) {
+                            $("#autorList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("A", autoresGlobal, "#autorList");
+                    }
+
+                    // Cargar editoriales
+                    if (editorialesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerEditoriales",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            editorialesGlobal = response;
+                            cargarCombo("E", editorialesGlobal, "#editorialList");
+                        } catch (error) {
+                            $("#editorialList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("E", editorialesGlobal, "#editorialList");
+                    }
+
+                    // Cargar materias
+                    if (materiasGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerMaterias",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            materiasGlobal = response;
+                            cargarCombo("M", materiasGlobal, "#materiaList");
+                        } catch (error) {
+                            $("#materiaList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("M", materiasGlobal, "#materiaList");
+                    }
+
+                    // Cargar series
+                    if (seriesGlobal.length === 0) {
+                        try {
+                            const response = await $.ajax({
+                                url: "/api/Libro/TraerSeries",
+                                type: "GET",
+                                dataType: "json"
+                            });
+                            seriesGlobal = response;
+                            cargarCombo("S", seriesGlobal, "#serieList");
+                        } catch (error) {
+                            $("#serieList").append('<option value="Sin datos.">Sin datos.</option>');
+                        }
+                    } else {
+                        cargarCombo("S", seriesGlobal, "#serieList");
+                    }
+                }
+
+                setearCombos();
+                combosCambiados = 0;
+            }
+
+            function cargarCombo(opcion, lista, elementId) {
+                $(elementId).empty();
+
+                if (lista && lista.length > 0) {
+                    $.each(lista, function (index, item) {
+                        let displayText, value;
+
+                        switch (opcion) {
+                            case "A":
+                                displayText = item.autor;
+                                value = item.id;
+                                break;
+                            case "E":
+                                displayText = item.editorial;
+                                value = item.id;
+                                break;
+                            case "M":
+                                displayText = item.materia;
+                                value = item.id;
+                                break;
+                            case "S":
+                                displayText = item.serie;
+                                value = item.id;
+                                break;
+                        }
+
+                        $(elementId).append(`<option value="${displayText}" data-id="${value}">${displayText}</option>`);
+                    });
+                }
+            }
+
+            async function cargarClientes() {
+                try {
+                    clientesGlobal = await $.ajax({
+                        url: "/api/Cliente/TraerClientes",
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    $('#clienteList').empty();
+                    clientesGlobal.forEach(cliente => {
+                        $('#clienteList').append(`<option value="${cliente.nombre}" data-id="${cliente.id}">${cliente.nombre}</option>`);
+                    });
+                } catch (error) {
+                    console.error("Error loading clients:", error);
+                    $('#clienteList').append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            function setearCombos() {
+                seleccionarPrimerElemento("#cboAutor", "#autorList", "autor");
+                seleccionarPrimerElemento("#cboEditorial", "#editorialList", "editorial");
+                seleccionarPrimerElemento("#cboMateria", "#materiaList", "materia");
+                seleccionarPrimerElemento("#cboSerie", "#serieList", "serie");
+            }
+
+            function seleccionarPrimerElemento(comboSelector, listSelector, tipo) {
+                const firstOption = $(listSelector + " option:first");
+                if (firstOption.length > 0) {
+                    $(comboSelector).val(firstOption.val());
+                    seleccionados[tipo] = {
+                        id: firstOption.data("id"),
+                        text: firstOption.val()
+                    };
+                }
+            }
+
+            async function traerCoincidentes(searchText, tipo, comboSelector, listSelector) {
+                $(listSelector).empty();
+                if (searchText === "") {
+                    searchText = "-";
+                }
+                try {
+                    const data = await $.ajax({
+                        url: `/api/Libro/TraerCoincidentes?busqueda=${encodeURIComponent(searchText)}&tipo=${tipo}`,
+                        type: "GET",
+                        dataType: "json"
+                    });
+
+                    switch (tipo) {
+                        case "A":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.autor}" data-id="${item.id}">${item.autor}</option>`);
+                            });
+                            break;
+                        case "E":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.editorial}" data-id="${item.id}">${item.editorial}</option>`);
+                            });
+                            break;
+                        case "M":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.materia}" data-id="${item.id}">${item.materia}</option>`);
+                            });
+                            break;
+                        case "S":
+                            $.each(data, function (index, item) {
+                                $(listSelector).append(`<option value="${item.serie}" data-id="${item.id}">${item.serie}</option>`);
+                            });
+                            break;
+                    }
+
+                    const input = $(comboSelector)[0];
+                    const len = searchText.length;
+                    if (input.setSelectionRange) {
+                        input.setSelectionRange(len, len);
+                    }
+                } catch (error) {
+                    console.error("Error buscando coincidentes:", error);
+                    $(listSelector).append('<option value="Error loading data">Error loading data</option>');
+                }
+            }
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////FIN DE PARTE DE COMBOS////////////////////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////INICIO DE PARTE DE VALIDACIÓN DE NÚMEROS////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Acá pongo la validación para los campos numéricos
+            setupNumericFieldValidation("#txtCodigo", validarCodigo, function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    buscarLibrosReservados();
+                }
+            });
+
+            $("#txtCodigo").on("change", function () {
+                var codigo = $(this).val();
+                const validation = validarCodigo(codigo);
+                if (validation.isValid) {
+                    buscarLibrosReservados();
+                }
+            });
+
+            setupNumericFieldValidation("#txtIdReserva", function (valor) {
+                return validarCampoNumerico(valor, "ID de reserva");
+            }, async function (validation, element) {
+                if (validation.isValid && element.val()) {
+                    await buscarLibrosReservados();
+                }
+            });
+
+            $("#txtIdReserva").on("change", async function () {
+                var reserva = $(this).val();
+                const validation = validarCampoNumerico(reserva, "ID de reserva");
+                if (validation.isValid) {
+                    await buscarLibrosReservados();
+                }
+            });
+
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////////FIN DE PARTE DE VALIDACIÓN DE NÚMEROS///////////////////////////
+            //////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            // Eventos de la grilla - para manejar los checkboxes
+            $('#dgvLibros').on('change', 'input.asignar-checkbox', function () {
+                const row = $(this).closest('tr');
+                const idReserva = parseInt(row.find('td:eq(1)').text());
+                const isChecked = $(this).prop('checked');
+
+                if (isChecked) {
+                    // Agrego a la lista si no está ya
+                    if (!reservasAAsignar.includes(idReserva)) {
+                        reservasAAsignar.push(idReserva);
+                    }
+                } else {
+                    // Saco de la lista
+                    const index = reservasAAsignar.indexOf(idReserva);
+                    if (index > -1) {
+                        reservasAAsignar.splice(index, 1);
+                    }
+                }
+
+                // Habilito/deshabilito el botón asignar
+                actualizarBotonAsignar();
+            });
+
+            // Eventos de botones
+            $('#btnLimpiar').click(function () {
+                limpiarBusqueda();
+                buscarLibrosReservados();
+            });
+
+            $('#btnAsignar').click(async function () {
+                await asignarReservas();
+            });
+
+            // Funciones principales
+            function actualizarBotonAsignar() {
+                $('#btnAsignar').prop('disabled', reservasAAsignar.length === 0);
+            }
+
+            function limpiarBusqueda() {
+                $('#txtTitulo').val('');
+                $('#txtCodigo').val('');
+                $('#txtIdReserva').val('');
+                $('#cboAutor').val('');
+                $('#cboEditorial').val('');
+                $('#cboMateria').val('');
+                $('#cboSerie').val('');
+                $('#cboCliente').val('');
+                $('#dgvLibros tbody').empty();
+
+                seleccionados = {
+                    autor: { id: null, text: null },
+                    editorial: { id: null, text: null },
+                    materia: { id: null, text: null },
+                    serie: { id: null, text: null },
+                    cliente: { id: null, text: null }
+                };
+
+                reservasAAsignar = [];
+                actualizarBotonAsignar();
+            }
+
+            async function buscarLibrosReservados() {
+                try {
+                    const titulo = $('#txtTitulo').val() || null;
+                    const codigo = $('#txtCodigo').val() ? parseInt($('#txtCodigo').val()) : null;
+                    const idReserva = $('#txtIdReserva').val() ? parseInt($('#txtIdReserva').val()) : null;
+
+                    // Obtengo IDs de las selecciones guardadas
+                    const idAutor = seleccionados.autor.id;
+                    const idSerie = seleccionados.serie.id;
+                    const idEditorial = seleccionados.editorial.id;
+                    const idMateria = seleccionados.materia.id;
+
+                    // Filtro "No tiene" (id = 1)
+                    const finalIdAutor = idAutor === 1 ? null : idAutor;
+                    const finalIdSerie = idSerie === 1 ? null : idSerie;
+                    const finalIdEditorial = idEditorial === 1 ? null : idEditorial;
+                    const finalIdMateria = idMateria === 1 ? null : idMateria;
+
+                    // Cliente
+                    const idCliente = seleccionados.cliente.id ? seleccionados.cliente.id : null;
+
+                    const response = await $.ajax({
+                        url: "/api/Reserva/TraerLibrosReservadosParaAsignar",
+                        type: "GET",
+                        data: {
+                            titulo: titulo,
+                            idSerie: finalIdSerie,
+                            idAutor: finalIdAutor,
+                            idEditorial: finalIdEditorial,
+                            idMateria: finalIdMateria,
+                            codigo: codigo,
+                            idCliente: idCliente,
+                            idReserva: idReserva
+                        },
+                        dataType: "json"
+                    });
+
+                    if (response && response.length > 0) {
+                        llenarTablaLibros(response);
+                    } else {
+                        $('#dgvLibros tbody').empty();
+                        toastInfo('No se encontraron libros reservados con los criterios especificados', 'Sin resultados');
+                    }
+                } catch (error) {
+                    console.error("Error buscando libros reservados:", error);
+                    toastError('Error al buscar libros reservados: ' + (error.message || 'Error desconocido'), 'Error');
+                }
+            }
+
+            function llenarTablaLibros(libros) {
+                const tbody = $('#dgvLibros tbody');
+                tbody.empty();
+                reservasAAsignar = []; // Reseteo las reservas seleccionadas
+
+                libros.forEach(libro => {
+                    const row = `
+                                <tr>
+                                    <td><input type="checkbox" class="form-check-input asignar-checkbox"></td>
+                                    <td>${libro.idReserva}</td>
+                                    <td style="display:none;">${libro.idCliente}</td>
+                                    <td>${libro.nomCliente}</td>
+                                    <td style="display:none;">${libro.idLibro}</td>
+                                    <td>${libro.codigo}</td>
+                                    <td>${libro.titulo}</td>
+                                    <td>${libro.serie || ''}</td>
+                                    <td>${libro.autor}</td>
+                                    <td>${libro.editorial || ''}</td>
+                                    <td>${libro.materia || ''}</td>
+                                    <td>${libro.precio ? parseFloat(libro.precio).toFixed(2) : ''}</td>
+                                    <td>${libro.precioLista ? parseFloat(libro.precioLista).toFixed(2) : ''}</td>
+                                    <td>${libro.contado ? parseFloat(libro.contado).toFixed(2) : ''}</td>
+                                </tr>
+                            `;
+                    tbody.append(row);
+                });
+
+                actualizarBotonAsignar();
+            }
+
+            async function asignarReservas() {
+                if (reservasAAsignar.length === 0) {
+                    toastTopDerecha('Debe seleccionar al menos una reserva para asignar', 'Sin selección');
+                    return;
+                }
+
+                const result = await Swal.fire({
+                    icon: 'question',
+                    title: '¿Está seguro?',
+                    text: `¿Desea asignar ${reservasAAsignar.length} reserva(s)?`,
+                    showCancelButton: true,
+                    confirmButtonText: 'Sí, asignar',
+                    cancelButtonText: 'Cancelar'
+                });
+
+                if (result.isConfirmed) {
+                    try {
+                        const response = await $.ajax({
+                            url: "/api/Reserva/AsignarReservas",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(reservasAAsignar)
+                        });
+
+                        const todosExitosos = Object.values(response).every(value => value === 1);
+
+                        if (todosExitosos) {
+                            toastExito(`${reservasAAsignar.length} reserva(s) asignada(s) exitosamente: ${Object.keys(response).join(', ')}`, 'Éxito');
+
+                            // Actualizo la lista
+                            await buscarLibrosReservados();
+                        } else {
+                            // Si hubo errores, muestro cuáles
+                            const reservasConError = Object.entries(response)
+                                .filter(([_, value]) => value !== 1)
+                                .map(([key, _]) => key);
+
+                            toastTopDerecha(`Algunas reservas no pudieron ser asignadas: ${reservasConError.join(', ')}`, 'Advertencia');
+
+                            // Actualizo la lista
+                            await buscarLibrosReservados();
+                        }
+                    } catch (error) {
+                        console.error("Error asignando reservas:", error);
+                        toastError('Error al asignar reservas: ' + (error.message || 'Error desconocido'), 'Error');
+                    }
+                }
+            }
+
+            // Navegación con Enter - para que sea más cómodo de usar
+            $('input, select').on('keydown', function (e) {
+                if (e.keyCode === 13) {
+                    e.preventDefault();
+                    const inputs = $('input:visible, select:visible, button:visible').not(':disabled');
+                    const idx = inputs.index(this);
+                    if (idx < inputs.length - 1) {
+                        inputs[idx + 1].focus();
+                    } else {
+                        // Si es el último input, disparo la búsqueda
+                        buscarLibrosReservados();
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
